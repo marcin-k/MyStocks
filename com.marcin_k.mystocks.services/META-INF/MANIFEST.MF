@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Services
+Bundle-SymbolicName: com.marcin_k.mystocks.services
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: MARCIN_K
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Service-Component: OSGI-INF/component.xml
+Import-Package: com.marcin_k.mystocks.model,
+ com.marcin_k.mystocks.services.prepare_files
+Bundle-ActivationPolicy: lazy
+Export-Package: com.marcin_k.mystocks.services.prepare_files
