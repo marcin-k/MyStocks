@@ -1,7 +1,7 @@
 package com.marcin_k.mystocks.services.internal;
 
 import com.marcin_k.mystocks.model.IDownloadStocksService;
-import com.marcin_k.mystocks.services.prepare_files.FilesController;
+import com.marcin_k.mystocks.services.download_stock_files.FilesController;
 
 public class DownloadStocksServiceImpl implements IDownloadStocksService{
 

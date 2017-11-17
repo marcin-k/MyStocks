@@ -7,6 +7,5 @@ Bundle-Vendor: MARCIN_K
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/component.xml
 Import-Package: com.marcin_k.mystocks.model,
- com.marcin_k.mystocks.services.prepare_files
+ com.marcin_k.mystocks.services.download_stock_files
 Bundle-ActivationPolicy: lazy
-Export-Package: com.marcin_k.mystocks.services.prepare_files

@@ -16,6 +16,10 @@ public class Stock {
 	private String ticker;
 	private ArrayList<DailyStockRecord> stockRecords;
 	
+	public Stock(String ticker, ArrayList<DailyStockRecord> stockRecords) {
+		this.ticker = ticker;
+		this.stockRecords = stockRecords;
+	}
 	
 	
 	
