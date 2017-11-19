@@ -1,4 +1,4 @@
-package com.marcin_k.mystocks.services.download_stock_files;
+package com.marcin_k.mystocks.functions.download_stock_files;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,6 +10,7 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 public class FilesController {
 	/** static Singleton instance **/
@@ -47,8 +48,26 @@ public class FilesController {
 		lastUpdateDate = configFile.getLastModificationDate();
 	}
 	
-	//
 
+//-------------------- Returns a list of all stocks based on file names in directory ------------------------
+	//This method should be called once the files are download and exported - after getAllFiles()
+	public ArrayList<String> getAllTickers(){
+		
+		ArrayList<String> stockTickers = new ArrayList<String>();
+		File directory = new File(destDirectory);
+		File[] listOfFiles = directory.listFiles();
+
+		    for (int i = 0; i < listOfFiles.length; i++) {
+		      if (listOfFiles[i].isFile()) {
+		    	  	//adds to the list the name of the file (ticker) without extension
+		        stockTickers.add(listOfFiles[i].getName().toUpperCase().substring(0, 
+		        		(listOfFiles[i].getName().length()-4)));
+		      }
+		    }
+		    
+		return stockTickers;
+	}
+	
 //-------------------------- Download all files and unzip them if files are old -----------------------------
 	//TODO: remove the exception from here and catch it in UnzipUtility
 	public void getAllFiles() {

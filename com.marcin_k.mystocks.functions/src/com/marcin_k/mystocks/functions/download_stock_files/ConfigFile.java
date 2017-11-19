@@ -1,4 +1,4 @@
-package com.marcin_k.mystocks.services.download_stock_files;
+package com.marcin_k.mystocks.functions.download_stock_files;
 
 import java.io.BufferedReader;
 import java.io.File;

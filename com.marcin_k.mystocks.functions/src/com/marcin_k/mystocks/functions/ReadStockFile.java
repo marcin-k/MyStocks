@@ -1,8 +1,8 @@
 package com.marcin_k.mystocks.functions;
 
+import com.marcin_k.mystocks.functions.download_stock_files.FilesController;
 import com.marcin_k.mystocks.model.DailyStockRecord;
 import com.marcin_k.mystocks.model.Stock;
-import com.marcin_k.mystocks.services.download_stock_files.FilesController;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

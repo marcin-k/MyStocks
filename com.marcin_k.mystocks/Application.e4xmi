@@ -3,7 +3,8 @@
   <children xsi:type="basic:TrimmedWindow" xmi:id="_8GQMwLZ_Eees6ctlhQZWTA" elementId="com.marcin_k.mystocks.trimmedwindow.mystocks" label="***************** MyStocks *****************" x="20" y="20" width="1000" height="800">
     <children xsi:type="basic:PartSashContainer" xmi:id="_XkqCoLaAEees6ctlhQZWTA" elementId="com.marcin_k.mystocks.partsashcontainer.0" horizontal="true">
       <children xsi:type="basic:PartStack" xmi:id="_bracoLaAEees6ctlhQZWTA" elementId="com.marcin_k.mystocks.partstack.0" containerData="150">
-        <children xsi:type="basic:Part" xmi:id="_cN9wELaAEees6ctlhQZWTA" elementId="com.marcin_k.mystocks.part.stocklist" contributionURI="bundleclass://com.marcin_k.mystocks/com.marcin_k.mystocks.parts.StockList" label="StockList"/>
+        <children xsi:type="basic:Part" xmi:id="_cN9wELaAEees6ctlhQZWTA" elementId="com.marcin_k.mystocks.part.stocklist" contributionURI="bundleclass://com.marcin_k.mystocks/com.marcin_k.mystocks.parts.MyStocks" label="MyStocks"/>
+        <children xsi:type="basic:Part" xmi:id="_PxSq0My3EeeFq6J5aNU2zQ" elementId="com.marcin_k.mystocks.part.test" contributionURI="bundleclass://com.marcin_k.mystocks/com.marcin_k.mystocks.parts.AllStocks" label="All"/>
       </children>
       <children xsi:type="basic:PartSashContainer" xmi:id="_e_KFULaAEees6ctlhQZWTA" elementId="com.marcin_k.mystocks.partsashcontainer.1" containerData="700">
         <children xsi:type="basic:PartStack" xmi:id="_f61DYLaAEees6ctlhQZWTA" elementId="com.marcin_k.mystocks.partstack.1" containerData="400">

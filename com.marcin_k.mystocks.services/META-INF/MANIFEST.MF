@@ -6,6 +6,6 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: MARCIN_K
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/component.xml
-Import-Package: com.marcin_k.mystocks.model,
- com.marcin_k.mystocks.services.download_stock_files
+Import-Package: com.marcin_k.mystocks.functions.download_stock_files,
+ com.marcin_k.mystocks.model
 Bundle-ActivationPolicy: lazy

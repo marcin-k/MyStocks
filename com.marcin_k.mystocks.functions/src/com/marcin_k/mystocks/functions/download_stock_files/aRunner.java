@@ -1,4 +1,4 @@
-package com.marcin_k.mystocks.services.download_stock_files;
+package com.marcin_k.mystocks.functions.download_stock_files;
 
 import java.io.IOException;
 
@@ -12,8 +12,8 @@ public class aRunner {
 		//downlaods all the files and unzipps them
 		FilesController.getInstance().getAllFiles();
 		ReadStockFile testReader = new ReadStockFile();
-		testReader.getStockHistoryFromFile("AGROLIGA");
-		
+		//testReader.getStockHistoryFromFile("AGROLIGA");
+		FilesController.getInstance().getAllTickers();
 
 	}
 

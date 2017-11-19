@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import org.eclipse.swt.widgets.Composite;
 
-public class StockList {
+public class MyStocks {
 	
 	@Inject
 	com.marcin_k.mystocks.model.IDownloadStocksService downloadStocksService;

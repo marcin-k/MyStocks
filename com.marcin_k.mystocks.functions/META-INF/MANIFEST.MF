@@ -5,5 +5,5 @@ Bundle-SymbolicName: com.marcin_k.mystocks.functions
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: MARCIN_K
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: com.marcin_k.mystocks.services.download_stock_files
+Export-Package: com.marcin_k.mystocks.functions.download_stock_files
 Import-Package: com.marcin_k.mystocks.model
