@@ -2,13 +2,24 @@
 package com.marcin_k.mystocks.parts;
 
 import com.marcin_k.mystocks.functions.download_stock_files.*;
+import com.marcin_k.mystocks.model.Stock;
+
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+
+import org.eclipse.core.databinding.beans.BeanProperties;
+import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.e4.ui.services.EMenuService;
+import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
+import org.eclipse.jface.databinding.viewers.ViewerSupport;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -27,6 +38,12 @@ import org.eclipse.swt.widgets.Text;
 
 public class AllStocks {
 
+	//access to selection service
+	@Inject
+	ESelectionService service;
+	
+	private WritableList writableList;
+	
 	private TableViewer viewer;
 	protected String searchString ="";
 	
@@ -68,32 +85,50 @@ public class AllStocks {
 				table.setLinesVisible( true); 
 				table.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true)); 
 				
-				viewer.setContentProvider( ArrayContentProvider.getInstance()); 
+				TableViewerColumn column = new TableViewerColumn(viewer, SWT.None);
+				column.getColumn().setWidth(120);
+				column.getColumn().setText(" Ticker");
+				writableList = new WritableList<>(StocksController.getInstance().getAllStocksObjects(), Stock.class);
+				ViewerSupport.bind(viewer, writableList, BeanProperties.values(new String[] {
+						Stock.TICKER
+				}));
 				
-//!!!!! TODO: PROBABLY WILL NEED TO PASS IN OBJECTS RATHER THAT ARRAY OF STRINGS
-				
-				// create column for the ticker property 
-				TableViewerColumn colSummary = new TableViewerColumn( viewer, SWT.NONE); 
-				colSummary.setLabelProvider( new ColumnLabelProvider() { 
-					@Override public String getText(Object element) { 
-						String ticker = (String) element;
-						return ticker; 
-						} 
-					}); 
-				colSummary.getColumn().setWidth( 120); 
-				colSummary.getColumn().setText(" Ticker");
-				
-				viewer.setInput(FilesController.getInstance().getAllTickers());
-				// add a filter which will search in the summary and description field 
+//		Vestion Prior to Data Binding				
+//				viewer.setContentProvider( ArrayContentProvider.getInstance()); 
+//				
+//				
+//				// create column for the ticker property 
+//				TableViewerColumn colSummary = new TableViewerColumn( viewer, SWT.NONE); 
+//				colSummary.setLabelProvider( new ColumnLabelProvider() { 
+//					@Override public String getText(Object element) { 
+//						String ticker = ((Stock) element).getTicker();
+//						return ticker; 
+//						} 
+//					}); 
+//				colSummary.getColumn().setWidth( 120); 
+//				colSummary.getColumn().setText(" Ticker");
+//				
+//				viewer.setInput(StocksController.getInstance().getAllStocksObjects());
+//				// add a filter which will search in the summary and description field 
 				
 				viewer.addFilter( new ViewerFilter() { 
 					@Override 
 					public boolean select( Viewer viewer, Object parentElement, Object element) { 
-						String ticker = (String) element; 
+						String ticker = ((Stock) element).getTicker(); 
 						return ticker.toUpperCase().contains(searchString.toUpperCase()); 
 						} 
-					});
+					});		
 				
+				viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+					@Override
+					public void selectionChanged(SelectionChangedEvent event) {
+						// TODO Auto-generated method stub
+						IStructuredSelection selection = (IStructuredSelection)
+								viewer.getSelection();
+						service.setSelection(selection.getFirstElement());
+						
+					}
+				});
 				
 	}
 

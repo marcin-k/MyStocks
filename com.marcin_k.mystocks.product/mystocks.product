@@ -13,6 +13,9 @@
       </vmArgsMac>
    </launcherArgs>
 
+   <splash
+      location="com.marcin_k.mystocks"
+      startupProgressRect="5,275,445,15" />
    <launcher>
       <win useIco="false">
          <bmp/>

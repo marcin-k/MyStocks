@@ -79,7 +79,9 @@ public class FilesController {
 			downloadFile();
 			unzipUtility.unzip(sourceDirectory, destDirectory);
 			deleteZIP();
-		}	
+		}
+		//creates objects of all downloaded files
+		StocksController.getInstance().setupStocks(getAllTickers());
 	}
 
 //------------------------------------ Getters and Setters --------------------------------------------------	

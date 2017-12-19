@@ -13,6 +13,9 @@ import java.util.ArrayList;
  *************************************************************/
 public class Stock {
 	
+	//Constant for data binding
+	public static final String TICKER = "ticker";
+	
 	private String ticker;
 	private ArrayList<DailyStockRecord> stockRecords;
 	
@@ -21,6 +24,9 @@ public class Stock {
 		this.stockRecords = stockRecords;
 	}
 	
-	
+//------------------------------------ Getters and Setters --------------------------------------------------	
+	public String getTicker() {
+		return ticker;
+	}
 	
 }
