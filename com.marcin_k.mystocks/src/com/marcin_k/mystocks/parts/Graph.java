@@ -64,8 +64,7 @@ public class Graph {
 		double[] values = { 0.7, 0.2 };
 		series.setYSeries(values);
 		
-		Text testEnd = new Text(parent, SWT.NONE);
-		testEnd.setText("below the chart");
+//removed to test git sync 
 		
 
 		
