@@ -1,9 +1,7 @@
 package com.marcin_k.mystocks.parts;
 
 import java.util.ArrayList;
-
 import javax.annotation.PostConstruct;
-
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -19,7 +17,7 @@ public class Recommendations {
 	private TableViewer viewer;
 	
 	@PostConstruct
-	public void createControls( Composite parent) {
+	public void createControls( Composite parent) {		
 		
 		viewer = new TableViewer(parent, SWT.MULTI|SWT.FULL_SELECTION);
 		Table table = viewer.getTable();

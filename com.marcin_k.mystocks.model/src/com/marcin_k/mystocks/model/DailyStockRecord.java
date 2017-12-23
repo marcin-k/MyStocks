@@ -15,11 +15,12 @@ public class DailyStockRecord {
 	private double highPrice;
 	private double lowPrice;
 	private double closePrice;
-	private int volume;
+	//some contracts stores a volume as an average therefore has to be stored as double 
+	private double volume;
 	
 //---------------------------------------- Constructor ------------------------------------------------------
 	public DailyStockRecord(String ticker, int date, double openPrice, double highPrice, double lowPrice,
-			double closePrice, int volume) {
+			double closePrice, double volume) {
 		this.ticker = ticker;
 		this.date = date;
 		this.openPrice = openPrice;
@@ -48,7 +49,7 @@ public class DailyStockRecord {
 	public double getClosePrice() {
 		return closePrice;
 	}
-	public int getVolume() {
+	public double getVolume() {
 		return volume;
 	}
 }

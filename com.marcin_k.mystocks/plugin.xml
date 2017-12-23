@@ -12,6 +12,14 @@
                name="appName"
                value="mystocks">
          </property>
+         <property
+               name="startupProgressRect"
+               value="5,275,445,15">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
       </product>
    </extension>
    <extension
@@ -20,10 +28,6 @@
             class="com.marcin_k.mystocks.splashHandlers.InteractiveSplashHandler"
             id="com.marcin_k.mystocks.splashHandlers.interactive">
       </splashHandler>
-      <splashHandlerProductBinding
-            productId="com.marcin_k.mystocks.product"
-            splashId="com.marcin_k.mystocks.splashHandlers.interactive">
-      </splashHandlerProductBinding>
    </extension>
 
 </plugin>

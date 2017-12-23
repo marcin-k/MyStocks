@@ -1,5 +1,7 @@
 package com.marcin_k.mystocks.model;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 
 /*************************************************************
@@ -16,6 +18,9 @@ public class Stock {
 	//Constant for data binding
 	public static final String TICKER = "ticker";
 	
+	//Constant added for data binding
+	private PropertyChangeSupport changes = new PropertyChangeSupport(this);
+	
 	private String ticker;
 	private ArrayList<DailyStockRecord> stockRecords;
 	
@@ -28,5 +33,17 @@ public class Stock {
 	public String getTicker() {
 		return ticker;
 	}
+//------------------------------------------ changed for data binding ----------------------------------- 
+	public void setTicker(String ticker) {
+		changes.firePropertyChange( TICKER, this.ticker, this.ticker = ticker);
+	}
+
+	public void addPropertyChangeListener(PropertyChangeListener l) {
+		changes.addPropertyChangeListener(l);
+	}
+
+	public void removePropertyChangeListener(PropertyChangeListener l) {
+		changes.removePropertyChangeListener(l);
+	}	
 	
 }

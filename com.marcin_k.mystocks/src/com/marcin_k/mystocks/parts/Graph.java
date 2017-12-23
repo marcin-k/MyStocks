@@ -19,9 +19,20 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+//import org.swtchart.Chart;
+//import org.swtchart.IAxis;
+//import org.swtchart.IAxisSet;
+//import org.swtchart.IBarSeries;
+//import org.swtchart.ISeries.SeriesType;
+
 import com.marcin_k.mystocks.model.IDownloadStocksService;
 import com.marcin_k.mystocks.model.Stock;
 
+import org.swtchart.Chart;
+import org.swtchart.IAxis;
+import org.swtchart.IAxisSet;
+import org.swtchart.IBarSeries;
+import org.swtchart.ISeries.SeriesType;
 
 public class Graph {
 	
@@ -37,6 +48,24 @@ public class Graph {
 	public void createControls( Composite parent, IDownloadStocksService downloadStocksService) {
 		
 		ticker = new Text(parent, SWT.BORDER);
+		
+		Chart chart = new Chart(parent, SWT.NONE); 
+		chart.getTitle().setText("SWT Chart");
+		chart.getAxisSet().getXAxis(0).getTitle().setText("Operating Systems");
+		chart.getAxisSet().getYAxis(0).getTitle().setText("Love");
+		IAxisSet axisSet = chart.getAxisSet();
+		IAxis xAxis = axisSet.getXAxis(0);
+		xAxis.setCategorySeries(new String[] { "Linux", "Windows" });
+		xAxis.enableCategory(true);
+
+		IBarSeries series = (IBarSeries) chart.getSeriesSet().createSeries(
+		SeriesType.BAR, "line series");
+		series.setBarColor(parent.getDisplay().getSystemColor(SWT.COLOR_RED));
+		double[] values = { 0.7, 0.2 };
+		series.setYSeries(values);
+		
+		Text testEnd = new Text(parent, SWT.NONE);
+		testEnd.setText("below the chart");
 		
 
 		

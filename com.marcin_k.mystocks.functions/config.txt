@@ -28,4 +28,4 @@ filesExported
 http://bossa.pl/pub/metastock/mstock/mstall.zip
 
 # Date of the last update (not to be updated by a user)
-2017-11-19 00:20:48
+2017-12-20 22:50:18

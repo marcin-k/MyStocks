@@ -23,3 +23,4 @@ Import-Package: com.marcin_k.mystocks.functions.download_stock_files,
  com.marcin_k.mystocks.model,
  javax.annotation;version="1.0.0";resolution:=optional,
  javax.inject;version="1.0.0"
+Bundle-ClassPath: .,lib/org.swtchart_0.10.0.v20160212.jar

@@ -44,7 +44,8 @@ public class ReadStockFile {
 				DailyStockRecord dailyStockRecord = new DailyStockRecord(partsOfEachLine[0],
 						Integer.parseInt(partsOfEachLine[1]), Double.parseDouble(partsOfEachLine[2]), 
 						Double.parseDouble(partsOfEachLine[3]), Double.parseDouble(partsOfEachLine[4]), 
-						Double.parseDouble(partsOfEachLine[5]), Integer.parseInt(partsOfEachLine[6]));
+						Double.parseDouble(partsOfEachLine[5]), 
+						Double.parseDouble(partsOfEachLine[6]));
 				
 				stockHistory.add(dailyStockRecord);
 				
