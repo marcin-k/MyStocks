@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 
 public class AllStocks {
-
+//testing git connection on linux
 	//access to selection service
 	@Inject
 	ESelectionService service;
