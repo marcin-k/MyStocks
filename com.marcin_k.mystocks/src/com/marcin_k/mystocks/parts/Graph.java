@@ -6,6 +6,8 @@ import java.awt.datatransfer.FlavorListener;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.naming.InitialContext;
+
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
@@ -16,29 +18,34 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import com.marcin_k.mystocks.functions.download_stock_files.StocksController;
-import com.marcin_k.mystocks.model.IDownloadStocksService;
-import com.marcin_k.mystocks.model.Stock;
 import org.swtchart.Chart;
 import org.swtchart.IAxis;
 import org.swtchart.IAxisSet;
-import org.swtchart.IBarSeries;
-import org.swtchart.IGrid;
+import org.swtchart.ILineSeries;
+import org.swtchart.ILineSeries.PlotSymbolType;
 import org.swtchart.ISeries;
 import org.swtchart.ISeries.SeriesType;
-import org.swtchart.internal.Grid;
 import org.swtchart.ISeriesSet;
 import org.swtchart.ITitle;
 import org.swtchart.LineStyle;
+
+import com.marcin_k.mystocks.functions.download_stock_files.StocksController;
+import com.marcin_k.mystocks.model.IDownloadStocksService;
+import com.marcin_k.mystocks.model.Stock;
+
+
+
 
 public class Graph {
 	
@@ -50,6 +57,10 @@ public class Graph {
 	private String tickerString;
 	Text ticker;
 	Chart chart;
+	private Combo dateRangeCombo;
+	//used to track if during the update different ticker was selected
+	//if so range is changed to max
+	private String previousTickerSymbol ="";
 	
 	@PostConstruct
 	public void createControls( Composite parent, IDownloadStocksService downloadStocksService) {
@@ -68,12 +79,6 @@ public class Graph {
 		//adjusts range for all axes
 		IAxisSet axisSet = chart.getAxisSet();
 		axisSet.adjustRange();
-//------------------------------------TESTING-------------------------------------------------------------
-
-		
-		
-		
-//----------------------------------TESTING END-----------------------------------------------------------		
 
 		GridData gridChart = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gridChart.heightHint = 450;
@@ -94,7 +99,7 @@ public class Graph {
 		label.setText("Date Range");
 		
 		//drop down menu for date range
-		Combo dateRangeCombo = new Combo(graphAdjustments, SWT.READ_ONLY);
+		dateRangeCombo = new Combo(graphAdjustments, SWT.READ_ONLY);
 		dateRangeCombo.add("max");
 		dateRangeCombo.add("3 years");
 		dateRangeCombo.add("1 year");
@@ -169,18 +174,48 @@ public class Graph {
 		graphTitle.setText(ticker.getText());
 						 //returns a double array of close prices based on ticker provided
 		double[] ySeries = StocksController.getInstance().getStockWithTicker(tickerSymbolString).getArrayOfClosePrices(dateRange);
+
 		ISeriesSet seriesSet = chart.getSeriesSet();
-		ISeries series = seriesSet.createSeries(SeriesType.LINE, "line series");
+		
+
+//------------------------------------TESTING-------------------------------------------------------------
+//		ISeries series = seriesSet.createSeries(SeriesType.LINE, "line series");
+		ILineSeries series = (ILineSeries)chart.getSeriesSet().createSeries( SeriesType.LINE, "line series" );
+	    series.setSymbolType(PlotSymbolType.NONE);
+//	    series.setSymbolColor( getSharedColors().getColor( UsusColors.USUS_LIGHT_BLUE ) );
+		
+		
+//----------------------------------TESTING END-----------------------------------------------------------		
+		//hides the legend
 		series.setVisibleInLegend(false);
 		series.setYSeries(ySeries);
 		IAxisSet axisSet = chart.getAxisSet();
 		axisSet.adjustRange();
-//		IAxis xAxis = axisSet.getXAxis(0);
-//		xAxis.adjustRange();
+		
+
+		
+
+
+		IAxis xAxis = axisSet.getXAxis(0);
+		IAxis yAxis = axisSet.getYAxis(0);
+		ITitle xAxisTitle = xAxis.getTitle();
+		ITitle yAxisTitle = yAxis.getTitle();
+//TODO: change that for dates and display then vertically		
+//		xAxis.setCategorySeries(new String[] { "Jan", "Feb", "Mar", "Apr", "May" });
+		xAxis.enableCategory(true);
 		
 		
+		xAxisTitle.setText("Date");
+		yAxisTitle.setText("Price");
 		
+		//if new ticker is selected change the range to max
+		if (!previousTickerSymbol.equals(tickerSymbolString)) {
+			
+			dateRangeCombo.select(0);
+		}
+					
 		chart.update();
+		previousTickerSymbol = tickerSymbolString;
 	}
 }
 
