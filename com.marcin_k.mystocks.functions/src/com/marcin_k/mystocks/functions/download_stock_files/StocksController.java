@@ -3,6 +3,7 @@ package com.marcin_k.mystocks.functions.download_stock_files;
 import java.util.ArrayList;
 
 import com.marcin_k.mystocks.functions.ReadStockFile;
+import com.marcin_k.mystocks.model.DailyStockRecord;
 import com.marcin_k.mystocks.model.Stock;
 
 public class StocksController {
@@ -43,8 +44,27 @@ public class StocksController {
 	}
 	
 //------------------------------------ Getters and Setters --------------------------------------------------	
+	//get all stocks object
 	public ArrayList<Stock> getAllStocksObjects(){
 		return allStocks;
 	}
+	
+	//returns a Stock object with a ticker symbol passed in
+	public Stock getStockWithTicker(String ticker) {
+		Stock stockToReturn = null;
+		for (Stock stock : allStocks) {
+			if (ticker.equalsIgnoreCase(stock.getTicker())) {
+				stockToReturn = stock;
+			}
+		}
+		if (stockToReturn != null) {
+			return stockToReturn; 
+		}
+		else {
+			return new Stock("error", new ArrayList<DailyStockRecord>());
+		}
+	}
+	
+	//next method?
 	
 }
