@@ -3,22 +3,28 @@ package com.marcin_k.mystocks.services.internal;
 import com.marcin_k.mystocks.functions.download_stock_files.FilesController;
 import com.marcin_k.mystocks.model.IDownloadStocksService;
 
+/**********************************************************
+ * Class runs as a service to download stock files
+ * prior to application launch.
+ * 
+ **********************************************************/
 public class DownloadStocksServiceImpl implements IDownloadStocksService{
 
+	// DownloadStocksServiceImpl class implements 
+	// downloadStockFiles method and calls it from its 
+	// constructor. 
 	public DownloadStocksServiceImpl() {
-		// TODO Auto-generated constructor stub
 		downloadStocksFiles();
 	}
 	
+	// DownloadStockFiles method calls the getAllFiles method
+	// in FilesController, which checks the time stamp in the 
+	// config files and downloads and unpacks the stock files
 	@Override
 	public void downloadStocksFiles() {
-		// TODO Auto-generated method stub
 		System.out.println("*****************************************************************\n"
 				+ "******************************service running******************************\n"
 				+ "***************************************************************************");
 		FilesController.getInstance().getAllFiles();
 	}
-
-
-
 }

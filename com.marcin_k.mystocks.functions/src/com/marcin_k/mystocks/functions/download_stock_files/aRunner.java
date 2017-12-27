@@ -4,6 +4,11 @@ import java.io.IOException;
 
 import com.marcin_k.mystocks.functions.ReadStockFile;
 
+/********************************************
+ *
+ * Class for testing
+ *
+ ********************************************/
 public class aRunner {
 
 	public static void main(String[] args) throws IOException {

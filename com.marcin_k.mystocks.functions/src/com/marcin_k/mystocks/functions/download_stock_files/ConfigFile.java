@@ -13,10 +13,13 @@ import java.time.format.DateTimeFormatter;
  * writing to a config file, which contains the URL
  * of zip file with the stocks, date of last update
  * (to prevent the app of downloading the files twice
- * the same day
+ * the same day.
+ * 
+ * If file is missing class will generate a new one.
  **********************************************************************/
 public class ConfigFile {
 	
+	/** Variables **/
 	//TODO: read file and update date - if filed download
 	//		do nothing if date is the same in the file as current
 	//		create a default configuration file 
@@ -26,12 +29,12 @@ public class ConfigFile {
 	String lastModificationDate = "0000-00-00 00:00:00";
 	String FILENAME = "config.txt";
 	
-//---------------------------------------- Constructor ------------------------------------------------------	
+//--------------------------------------------- Constructor ------------------------------------------------------------	
 	public ConfigFile(){
 		readFile();
 	}
 	
-//------------------------------------ Reads the config file ------------------------------------------------
+//------------------------------------------ Reads the config file -----------------------------------------------------
 	private void readFile() {
 		int linesToRead = 1;
 		try (BufferedReader br = new BufferedReader(new FileReader(FILENAME))) {
@@ -72,7 +75,7 @@ public class ConfigFile {
 		}
 	}
 	
-//-------------------------------- Creates a new (or overrides) config file ---------------------------------	
+//------------------------------------- Creates a new (or overrides) config file ---------------------------------------	
 	public void createFile() {
 		
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

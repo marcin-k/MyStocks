@@ -8,6 +8,7 @@ package com.marcin_k.mystocks.model;
  *************************************************************/
 
 public class DailyStockRecord {
+	
 	private String ticker;
 	//date in the format YYYYMMDD
 	private int date;
@@ -15,10 +16,10 @@ public class DailyStockRecord {
 	private double highPrice;
 	private double lowPrice;
 	private double closePrice;
-	//some contracts stores a volume as an average therefore has to be stored as double 
+	//some contracts stores a volume as an average therefore variable is defined as double 
 	private double volume;
 	
-//---------------------------------------- Constructor ------------------------------------------------------
+//-------------------------------------------- Constructor -------------------------------------------------------------
 	public DailyStockRecord(String ticker, int date, double openPrice, double highPrice, double lowPrice,
 			double closePrice, double volume) {
 		this.ticker = ticker;
@@ -30,7 +31,7 @@ public class DailyStockRecord {
 		this.volume = volume;
 	}
 	
-//----------------------------------------- Getters ---------------------------------------------------------
+//----------------------------------------------- Getters --------------------------------------------------------------
 	public String getTicker() {
 		return ticker;
 	}

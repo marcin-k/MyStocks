@@ -1,13 +1,9 @@
 package com.marcin_k.mystocks.parts;
 
 import org.eclipse.swt.layout.GridLayout;
-import java.awt.datatransfer.FlavorListener;
-
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.naming.InitialContext;
-
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
@@ -15,17 +11,11 @@ import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.DateTime;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -34,26 +24,25 @@ import org.swtchart.IAxis;
 import org.swtchart.IAxisSet;
 import org.swtchart.ILineSeries;
 import org.swtchart.ILineSeries.PlotSymbolType;
-import org.swtchart.ISeries;
 import org.swtchart.ISeries.SeriesType;
 import org.swtchart.ISeriesSet;
 import org.swtchart.ITitle;
-import org.swtchart.LineStyle;
-
 import com.marcin_k.mystocks.functions.download_stock_files.StocksController;
 import com.marcin_k.mystocks.model.IDownloadStocksService;
 import com.marcin_k.mystocks.model.Stock;
 
-
-
-
+/****************************************************************
+ * GUI class, used to display a stock chart.
+ * Class will allow user to define a time frame,
+ * and technical analysis indicator on the diagram. 
+ *
+ ****************************************************************/
 public class Graph {
 	
+	/** Variables **/
 	// define DataBindingContext as field 
 	DataBindingContext ctx = new DataBindingContext();
 	private Stock stock;
-	
-	
 	private String tickerString;
 	Text ticker;
 	Chart chart;
@@ -62,6 +51,7 @@ public class Graph {
 	//if so range is changed to max
 	private String previousTickerSymbol ="";
 	
+//-------------------------------------------- Create Controls ---------------------------------------------------------	
 	@PostConstruct
 	public void createControls( Composite parent, IDownloadStocksService downloadStocksService) {
 		
@@ -131,12 +121,9 @@ public class Graph {
 		        }
 		      }
 		    });
-		
-		
-//$$$$$$$$$$$$$$ TODO: Here we are $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$		
 	}
 	
-	//called to set object from other class
+//------------------------------- Called to set object from other class ------------------------------------------------	
 	@Inject
 	public void setStock(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) Stock stock){
 		
@@ -148,22 +135,22 @@ public class Graph {
 		updateUserInterface( stock); 
 	}
 	
+//--------------------------- Updates interface calls update graph method ----------------------------------------------	
 	private void updateUserInterface( Stock stock) { 
-			if(ticker !=null && !ticker.isDisposed()) {
-				// ctx is defined as field in the class!!! 
-				// disposes existing bindings 
-				ctx.dispose();
-				// summary 
-				IObservableValue oWidgetTicker = WidgetProperties.text( SWT.Modify).observe( ticker);
-				IObservableValue oStockTicker = BeanProperties.value( Stock.TICKER).observe( stock);
-				ctx.bindValue( oWidgetTicker, oStockTicker);
-				
-				//System.out.println(ticker.getText());
-				updateGraph(ticker.getText(), -1);
-
-			}
+		if(ticker !=null && !ticker.isDisposed()) {
+			// ctx is defined as field in the class!!! 
+			// disposes existing bindings 
+			ctx.dispose();
+			// summary 
+			IObservableValue oWidgetTicker = WidgetProperties.text( SWT.Modify).observe( ticker);
+			IObservableValue oStockTicker = BeanProperties.value( Stock.TICKER).observe( stock);
+			ctx.bindValue( oWidgetTicker, oStockTicker);
+			//update the graph	
+			updateGraph(ticker.getText(), -1);
+		}
 	}
 	
+//----------------------------------------- Updates graph --------------------------------------------------------------	
 	//Updates graph for a stock with a ticker passed in
 	//dateRange represents number of days to display, if -1 passed all data is displayed
 	private void updateGraph(String tickerSymbolString, int dateRange) {
@@ -173,29 +160,25 @@ public class Graph {
 		ITitle graphTitle = chart.getTitle();
 		graphTitle.setText(ticker.getText());
 						 //returns a double array of close prices based on ticker provided
-		double[] ySeries = StocksController.getInstance().getStockWithTicker(tickerSymbolString).getArrayOfClosePrices(dateRange);
+		double[] ySeries = StocksController.getInstance().getStockWithTicker(tickerSymbolString).
+				getArrayOfClosePrices(dateRange);
 
 		ISeriesSet seriesSet = chart.getSeriesSet();
 		
 
-//------------------------------------TESTING-------------------------------------------------------------
+		//*********************************** TESTING ***********************************
 //		ISeries series = seriesSet.createSeries(SeriesType.LINE, "line series");
 		ILineSeries series = (ILineSeries)chart.getSeriesSet().createSeries( SeriesType.LINE, "line series" );
 	    series.setSymbolType(PlotSymbolType.NONE);
 //	    series.setSymbolColor( getSharedColors().getColor( UsusColors.USUS_LIGHT_BLUE ) );
-		
-		
-//----------------------------------TESTING END-----------------------------------------------------------		
+				
+	    //********************************* TESTING END *********************************		
 		//hides the legend
 		series.setVisibleInLegend(false);
 		series.setYSeries(ySeries);
 		IAxisSet axisSet = chart.getAxisSet();
 		axisSet.adjustRange();
 		
-
-		
-
-
 		IAxis xAxis = axisSet.getXAxis(0);
 		IAxis yAxis = axisSet.getYAxis(0);
 		ITitle xAxisTitle = xAxis.getTitle();
@@ -203,17 +186,13 @@ public class Graph {
 //TODO: change that for dates and display then vertically		
 //		xAxis.setCategorySeries(new String[] { "Jan", "Feb", "Mar", "Apr", "May" });
 		xAxis.enableCategory(true);
-		
-		
 		xAxisTitle.setText("Date");
 		yAxisTitle.setText("Price");
 		
 		//if new ticker is selected change the range to max
 		if (!previousTickerSymbol.equals(tickerSymbolString)) {
-			
 			dateRangeCombo.select(0);
 		}
-					
 		chart.update();
 		previousTickerSymbol = tickerSymbolString;
 	}

@@ -11,14 +11,27 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 
+/******************************************************************
+ * Class will analyse all the stocks available and list the 
+ * ones that display potential to rapidly change.     
+ * 
+ * Recommendations will provide recommendations based on
+ * rapid change in trading volume of the stock.
+ * 
+ * In future release this section will also analyse online resources
+ * (fundamental analysis) to provide recommendation
+ *
+ ******************************************************************/
 public class Recommendations {
 	
+	/** Variables **/
 	//Table
 	private TableViewer viewer;
 	
+//-------------------------------------------- Create Controls ---------------------------------------------------------		
 	@PostConstruct
 	public void createControls( Composite parent) {		
-		
+				
 		viewer = new TableViewer(parent, SWT.MULTI|SWT.FULL_SELECTION);
 		Table table = viewer.getTable();
 		table.setHeaderVisible(true);

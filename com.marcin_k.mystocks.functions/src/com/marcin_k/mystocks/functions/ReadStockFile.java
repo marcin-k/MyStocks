@@ -20,9 +20,10 @@ import java.util.ArrayList;
 public class ReadStockFile {
 	
 	
-	
+//-------------------------------- Returns Stock object based on file content ------------------------------------------	
 	public Stock getStockHistoryFromFile(String stockTicker) {
 		
+		/** Variables **/
 		//exported files are stored in directory specified in config file
 		String FILENAME = FilesController.getInstance().getDestDirectory()+"/"+stockTicker+".mst";
 		

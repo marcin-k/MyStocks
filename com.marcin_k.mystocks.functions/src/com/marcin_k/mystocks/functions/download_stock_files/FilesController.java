@@ -12,6 +12,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+/********************************************************************
+ * Controller used to deal with the stock files, responsible for
+ * download, unpack and deletion of the archive file. 
+ * Directories and URL of the archive are defined in config file 
+ * 
+ ********************************************************************/
 public class FilesController {
 	/** static Singleton instance **/
 	private static volatile FilesController instance;
@@ -29,7 +35,7 @@ public class FilesController {
 		return instance;
 	}
 
-//------------------------------------ Non Singleton Part of Class ------------------------------------------
+//------------------------------------------ Non Singleton Part of Class -----------------------------------------------
 	/** Variables **/
 	ConfigFile configFile;
 	UnzipUtility unzipUtility;
@@ -38,7 +44,7 @@ public class FilesController {
 	String urlOfZipFile;
 	String lastUpdateDate;
 	
-//--------------------------------------------- Constructor -------------------------------------------------
+//-------------------------------------------------- Constructor -------------------------------------------------------
 	private FilesController() {
 		configFile = new ConfigFile();
 		unzipUtility = new UnzipUtility();
@@ -49,7 +55,7 @@ public class FilesController {
 	}
 	
 
-//-------------------- Returns a list of all stocks based on file names in directory ------------------------
+//-------------------------- Returns a list of all stocks based on file names in directory -----------------------------
 	//This method should be called once the files are download and exported - after getAllFiles()
 	public ArrayList<String> getAllTickers(){
 		
@@ -68,7 +74,7 @@ public class FilesController {
 		return stockTickers;
 	}
 	
-//-------------------------- Download all files and unzip them if files are old -----------------------------
+//--------------------------------- Download all files and unzip them if files are old ---------------------------------
 	//TODO: remove the exception from here and catch it in UnzipUtility
 	public void getAllFiles() {
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -80,11 +86,11 @@ public class FilesController {
 			unzipUtility.unzip(sourceDirectory, destDirectory);
 			deleteZIP();
 		}
-		//creates objects of all downloaded files
+		//creates objects of all download files
 		StocksController.getInstance().setupStocks(getAllTickers());
 	}
 
-//------------------------------------ Getters and Setters --------------------------------------------------	
+//----------------------------------------- Getters and Setters --------------------------------------------------------	
 	public ConfigFile getConfigFile() {
 		return configFile;
 	}
@@ -93,7 +99,7 @@ public class FilesController {
 		return destDirectory;
 	}
 	
-//-------------------------- Downloads the file in the ZIP format from the URL ------------------------------
+//--------------------------------- Downloads the file in the ZIP format from the URL ----------------------------------
 	public void downloadFile() {
 		try {
 			URL website = new URL(urlOfZipFile);
@@ -117,12 +123,12 @@ public class FilesController {
 			e2.printStackTrace();
 		} 
 	}	
-//------------------------------------------ Unzip Files ----------------------------------------------------
+//------------------------------------------------- Unpack Files -------------------------------------------------------
 	public void unzipFiles() {
 		unzipUtility.unzip(sourceDirectory, destDirectory);
 	}
 	
-//--------------------------------------- Deletes the ZIP file ----------------------------------------------
+//---------------------------------------------- Deletes the ZIP file --------------------------------------------------
 	private void deleteZIP() {
 		File file = new File(sourceDirectory);
 	    file.delete();

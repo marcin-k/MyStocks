@@ -9,8 +9,8 @@ import java.util.ArrayList;
  * DailyStockRecord, ticker symbol (corresponding to file
  * name, should match symbol on all records)
  * 
- *  In the future stock will also contains the recommendation
- *  and brief of the company's situation
+ *  In the future release stock will also contains the 
+ *  recommendation and brief of the company's situation
  * 
  *************************************************************/
 public class Stock {
@@ -29,7 +29,7 @@ public class Stock {
 		this.stockRecords = stockRecords;
 	}
 	
-//------------------------------------ Getters and Setters --------------------------------------------------	
+//------------------------------------------ Getters and Setters -------------------------------------------------------	
 	//returns ticker symbol
 	public String getTicker() {
 		return ticker;
@@ -121,7 +121,8 @@ public class Stock {
 				firstRecordToReturn = 0;
 			}
 		}
-		//if file contains less than 3 years of records a week, month, 3 months. 6 months, 1 year or max can be selected
+		//if file contains less than 3 years of records a week, month, 3 months. 6 months, 1 year 
+		//or max can be selected
 		else if (stockRecords.size()<750) {
 			if (dateRange==250) {
 				closePriceArray = new double [250];
@@ -187,7 +188,7 @@ public class Stock {
 		return closePriceArray;
 	}
 	
-//------------------------------------------ changed for data binding ----------------------------------- 
+//------------------------------------------------ Data binding methods ------------------------------------------------ 
 	public void setTicker(String ticker) {
 		changes.firePropertyChange( TICKER, this.ticker, this.ticker = ticker);
 	}

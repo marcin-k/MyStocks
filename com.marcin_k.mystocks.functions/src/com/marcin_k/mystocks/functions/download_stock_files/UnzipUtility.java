@@ -7,18 +7,20 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
- 
+
+/******************************************************************************************
+ * Class used to unpack the compressed stock files.
+ * Extracts a zip file specified by the zipFilePath to a directory specified by
+ * destDirectory (will be created if does not exists).
+ * 
+ * code of this class was taken from: 
+ * http://www.codejava.net/java-se/file-io/programmatically-extract-a-zip-file-using-java
+ ******************************************************************************************/
 public class UnzipUtility {
-    /**
-     * Size of the buffer to read/write data
-     */
+    //Size of the buffer to read/write data
     private static final int BUFFER_SIZE = 4096;
-    
-    /**
-     * Extracts a zip file specified by the zipFilePath to a directory specified by
-     * destDirectory (will be created if does not exists)
-     */
-//--------------------------------------- Extracts all files ------------------------------------------------    
+
+//-------------------------------------------- Extracts all files ------------------------------------------------------    
     public void unzip(String sourceDirectory, String destDirectory) {
     		
     		File destDir = new File(destDirectory);
@@ -48,11 +50,10 @@ public class UnzipUtility {
 			e.printStackTrace();
 		}
     }
-//------------------------------------ Extracts specific file -----------------------------------------------    
-    /** Currently unused allows to extract a specific file **/
+//----------------------------------------- Extracts specific file -----------------------------------------------------    
     private void extractFile(ZipInputStream zipIn, String filePath) {
         try {
-	    		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
+	    	BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
 	        byte[] bytesIn = new byte[BUFFER_SIZE];
 	        int read = 0;
 	        while ((read = zipIn.read(bytesIn)) != -1) {
