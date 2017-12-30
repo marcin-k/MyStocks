@@ -1,6 +1,6 @@
-package com.marcin_k.mystocks.functions;
+package com.marcin_k.mystocks.functions.filesHandlers;
 
-import com.marcin_k.mystocks.functions.download_stock_files.FilesController;
+import com.marcin_k.mystocks.functions.controllers.FilesController;
 import com.marcin_k.mystocks.model.DailyStockRecord;
 import com.marcin_k.mystocks.model.Stock;
 

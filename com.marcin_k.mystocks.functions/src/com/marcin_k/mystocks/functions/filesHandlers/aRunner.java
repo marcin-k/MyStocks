@@ -1,8 +1,8 @@
-package com.marcin_k.mystocks.functions.download_stock_files;
+package com.marcin_k.mystocks.functions.filesHandlers;
 
 import java.io.IOException;
 
-import com.marcin_k.mystocks.functions.ReadStockFile;
+import com.marcin_k.mystocks.functions.controllers.FilesController;
 
 /********************************************
  *

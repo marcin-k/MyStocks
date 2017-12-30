@@ -1,4 +1,4 @@
-package com.marcin_k.mystocks.functions.download_stock_files;
+package com.marcin_k.mystocks.functions.filesHandlers;
 
 import java.io.BufferedOutputStream;
 import java.io.File;

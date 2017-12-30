@@ -1,6 +1,6 @@
 package com.marcin_k.mystocks.services.internal;
 
-import com.marcin_k.mystocks.functions.download_stock_files.FilesController;
+import com.marcin_k.mystocks.functions.controllers.FilesController;
 import com.marcin_k.mystocks.model.IDownloadStocksService;
 
 /**********************************************************

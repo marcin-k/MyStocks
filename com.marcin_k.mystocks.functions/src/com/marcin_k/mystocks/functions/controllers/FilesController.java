@@ -1,4 +1,4 @@
-package com.marcin_k.mystocks.functions.download_stock_files;
+package com.marcin_k.mystocks.functions.controllers;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,6 +11,9 @@ import java.nio.channels.ReadableByteChannel;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+
+import com.marcin_k.mystocks.functions.filesHandlers.ConfigFile;
+import com.marcin_k.mystocks.functions.filesHandlers.UnzipUtility;
 
 /********************************************************************
  * Controller used to deal with the stock files, responsible for

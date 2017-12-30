@@ -1,6 +1,9 @@
 package com.marcin_k.mystocks.parts;
 
 import org.eclipse.swt.layout.GridLayout;
+
+import java.util.Arrays;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -22,14 +25,17 @@ import org.eclipse.swt.widgets.Text;
 import org.swtchart.Chart;
 import org.swtchart.IAxis;
 import org.swtchart.IAxisSet;
+import org.swtchart.IBarSeries;
 import org.swtchart.ILineSeries;
 import org.swtchart.ILineSeries.PlotSymbolType;
 import org.swtchart.ISeries.SeriesType;
 import org.swtchart.ISeriesSet;
 import org.swtchart.ITitle;
-import com.marcin_k.mystocks.functions.download_stock_files.StocksController;
+
+import com.marcin_k.mystocks.functions.controllers.StocksController;
 import com.marcin_k.mystocks.model.IDownloadStocksService;
 import com.marcin_k.mystocks.model.Stock;
+import com.marcin_k.mystocks.model.StockComponent;
 
 /****************************************************************
  * GUI class, used to display a stock chart.
@@ -54,26 +60,22 @@ public class Graph {
 //-------------------------------------------- Create Controls ---------------------------------------------------------	
 	@PostConstruct
 	public void createControls( Composite parent, IDownloadStocksService downloadStocksService) {
-		
 		parent.setLayout(new GridLayout(1, false));
 
+		//LABEL
 		ticker = new Text(parent, SWT.BORDER);
 		ticker.setEditable(false);
-		
 		GridData gridLabel = new GridData( SWT.CENTER, SWT.CENTER, true, false); 
-//		gridLabel.horizontalIndent = 22; 
 		gridLabel.minimumWidth = 160;
 		ticker.setLayoutData( gridLabel); 
 		
+		//CHART
 		chart = new Chart(parent, SWT.NONE); 
-		//adjusts range for all axes
-		IAxisSet axisSet = chart.getAxisSet();
-		axisSet.adjustRange();
-
 		GridData gridChart = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gridChart.heightHint = 450;
 		chart.setLayoutData(gridChart);
 		
+		//CHART SETTINGS
 		//Group of elements to adjust ranges in the graph
 		Group graphAdjustments = new Group(parent, SWT.NONE);
 		graphAdjustments.setText("Graph Settings");
@@ -83,10 +85,10 @@ public class Graph {
 		GridData gridData = new GridData(GridData.FILL, GridData.CENTER, true, false);
 		gridData.horizontalSpan = 2;
 		graphAdjustments.setLayoutData(gridData);
-		
 		Label label = new Label(graphAdjustments, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 		label.setText("Date Range");
+		
 		
 		//drop down menu for date range
 		dateRangeCombo = new Combo(graphAdjustments, SWT.READ_ONLY);
@@ -160,11 +162,21 @@ public class Graph {
 		ITitle graphTitle = chart.getTitle();
 		graphTitle.setText(ticker.getText());
 						 //returns a double array of close prices based on ticker provided
-		double[] ySeries = StocksController.getInstance().getStockWithTicker(tickerSymbolString).
-				getArrayOfClosePrices(dateRange);
+		double[] closePrices = StocksController.getInstance().getArrayOfValues(dateRange, 
+				StockComponent.CLOSE_PRICE, tickerSymbolString);
 
-		ISeriesSet seriesSet = chart.getSeriesSet();
+		double[] volume = StocksController.getInstance().getArrayOfValues(dateRange, 
+				StockComponent.VOLUME	, tickerSymbolString);
 		
+		// create bar series
+		IBarSeries barSeries = (IBarSeries) chart.getSeriesSet()
+		    .createSeries(SeriesType.BAR, "bar series");
+		barSeries.setVisibleInLegend(false);
+		barSeries.setYSeries(volume);
+		
+		ISeriesSet seriesSet = chart.getSeriesSet();
+		// adjust the axis range
+		chart.getAxisSet().adjustRange();		
 
 		//*********************************** TESTING ***********************************
 //		ISeries series = seriesSet.createSeries(SeriesType.LINE, "line series");
@@ -175,7 +187,7 @@ public class Graph {
 	    //********************************* TESTING END *********************************		
 		//hides the legend
 		series.setVisibleInLegend(false);
-		series.setYSeries(ySeries);
+		series.setYSeries(closePrices);
 		IAxisSet axisSet = chart.getAxisSet();
 		axisSet.adjustRange();
 		

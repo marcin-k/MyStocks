@@ -1,7 +1,8 @@
 
 package com.marcin_k.mystocks.parts;
 
-import com.marcin_k.mystocks.functions.download_stock_files.*;
+import com.marcin_k.mystocks.functions.controllers.StocksController;
+import com.marcin_k.mystocks.functions.filesHandlers.*;
 import com.marcin_k.mystocks.model.Stock;
 
 import java.util.List;
