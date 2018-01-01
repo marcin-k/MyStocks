@@ -8,7 +8,7 @@ import com.marcin_k.mystocks.model.Stock;
 import com.marcin_k.mystocks.model.StockComponent;
 
 /***********************************************************
- * Controller utilize the Singleton design pattern/
+ * Controller utilise the Singleton design pattern/
  * StockController deals witch the queries made on Stocks
  * objects, contains array list of all stock objects.
  *
@@ -120,13 +120,10 @@ public class StocksController {
 					StockComponent.CLOSE_PRICE, tickerSymbolString));
 			double highestVolume = getHighestValue(arrayToReturn);
 			int divider = findDecrement(highestPrice, highestVolume);
-			System.out.println("divider - " + divider);
-			System.out.println("avergeprice - " + highestPrice);
-			System.out.println("averageVolume - " + highestVolume);
 			
 			if (divider > 1) {
 				double[] decrementedArray = new double[arrayToReturn.length];
-				int index =0;
+				
 				for (int i=0; i<arrayToReturn.length; i++) {
 					decrementedArray[i]=arrayToReturn[i]/divider;
 				}
@@ -140,6 +137,7 @@ public class StocksController {
 	// find out value to decrement the volume to fit below the
 	// price on the diagram
 	public int findDecrement(double highPrice, double highVolume) {
+		System.out.println("high volume "+highVolume);
 		int numberToDevideVolume = 1;
 		while (highVolume > roundUpNumber(highPrice)) {
 			numberToDevideVolume *= 10;
@@ -147,7 +145,6 @@ public class StocksController {
 
 		}
 		volumeDivider = numberToDevideVolume;
-		System.out.println("number to div " + numberToDevideVolume);
 		return numberToDevideVolume;
 	}
 			
@@ -174,7 +171,6 @@ public class StocksController {
 		else {
 			roundedNumber=9;
 		}
-		
 		return roundedNumber;
 	}
 	
