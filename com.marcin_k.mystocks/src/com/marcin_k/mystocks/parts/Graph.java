@@ -31,6 +31,7 @@ import org.swtchart.ILineSeries.PlotSymbolType;
 import org.swtchart.ISeries.SeriesType;
 import org.swtchart.ISeriesSet;
 import org.swtchart.ITitle;
+import org.swtchart.Range;
 
 import com.marcin_k.mystocks.functions.controllers.StocksController;
 import com.marcin_k.mystocks.model.IDownloadStocksService;
@@ -51,7 +52,11 @@ public class Graph {
 	private Stock stock;
 	private String tickerString;
 	Text ticker;
-	Chart chart;
+	Chart priceChart;
+	Chart volumeChart;
+	IBarSeries barSeries;
+	IAxisSet axisSetPrice;
+	IAxisSet axisSetVolume;
 	private Combo dateRangeCombo;
 	//used to track if during the update different ticker was selected
 	//if so range is changed to max
@@ -69,11 +74,37 @@ public class Graph {
 		gridLabel.minimumWidth = 160;
 		ticker.setLayoutData( gridLabel); 
 		
-		//CHART
-		chart = new Chart(parent, SWT.NONE); 
-		GridData gridChart = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		gridChart.heightHint = 450;
-		chart.setLayoutData(gridChart);
+		//Price CHART
+		priceChart = new Chart(parent, SWT.NONE); 
+		GridData gridPriceChart = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		gridPriceChart.heightHint = 400;
+		priceChart.setLayoutData(gridPriceChart);
+		axisSetPrice = priceChart.getAxisSet();
+		IAxis xAxis = axisSetPrice.getXAxis(0);
+		IAxis yAxis = axisSetPrice.getYAxis(0);
+		ITitle xAxisTitle = xAxis.getTitle();
+		ITitle yAxisTitle = yAxis.getTitle();
+		yAxisTitle.setText("Price");
+		xAxisTitle.setVisible(false);
+		xAxis.enableCategory(true);
+		
+		//Volume CHART
+		volumeChart = new Chart(parent, SWT.NONE); 
+		GridData volumeGridChart = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		volumeGridChart.heightHint = 175;
+		volumeChart.setLayoutData(volumeGridChart);
+		barSeries = (IBarSeries) volumeChart.getSeriesSet().createSeries(SeriesType.BAR, "bar series");
+		barSeries.setVisibleInLegend(false);
+		ITitle volumeTitle = volumeChart.getTitle();
+		volumeTitle.setVisible(false);
+		axisSetVolume = volumeChart.getAxisSet();
+		IAxis xAxisVolume = axisSetVolume.getXAxis(0);
+		IAxis yAxisVolume = axisSetVolume.getYAxis(0);
+		ITitle xAxisVolumeTitle = xAxisVolume.getTitle();
+		ITitle yAxisVolumeTitle = yAxisVolume.getTitle();
+		xAxisVolumeTitle.setText("Date");
+		yAxisVolumeTitle.setText("Volume");
+		
 		
 		//CHART SETTINGS
 		//Group of elements to adjust ranges in the graph
@@ -157,55 +188,37 @@ public class Graph {
 	//dateRange represents number of days to display, if -1 passed all data is displayed
 	private void updateGraph(String tickerSymbolString, int dateRange) {
 		
-		
+		//Price CHART
 		//update title
-		ITitle graphTitle = chart.getTitle();
+		ITitle graphTitle = priceChart.getTitle();
 		graphTitle.setText(ticker.getText());
 						 //returns a double array of close prices based on ticker provided
 		double[] closePrices = StocksController.getInstance().getArrayOfValues(dateRange, 
 				StockComponent.CLOSE_PRICE, tickerSymbolString);
-
-		double[] volume = StocksController.getInstance().getArrayOfValues(dateRange, 
-				StockComponent.VOLUME	, tickerSymbolString);
-		
-		// create bar series
-		IBarSeries barSeries = (IBarSeries) chart.getSeriesSet()
-		    .createSeries(SeriesType.BAR, "bar series");
-		barSeries.setVisibleInLegend(false);
-		barSeries.setYSeries(volume);
-		
-		ISeriesSet seriesSet = chart.getSeriesSet();
-		// adjust the axis range
-		chart.getAxisSet().adjustRange();		
-
-		//*********************************** TESTING ***********************************
-//		ISeries series = seriesSet.createSeries(SeriesType.LINE, "line series");
-		ILineSeries series = (ILineSeries)chart.getSeriesSet().createSeries( SeriesType.LINE, "line series" );
+		ISeriesSet seriesSet = priceChart.getSeriesSet();
+		ILineSeries series = (ILineSeries)priceChart.getSeriesSet().createSeries( SeriesType.LINE, "line series" );
 	    series.setSymbolType(PlotSymbolType.NONE);
-//	    series.setSymbolColor( getSharedColors().getColor( UsusColors.USUS_LIGHT_BLUE ) );
-				
-	    //********************************* TESTING END *********************************		
 		//hides the legend
 		series.setVisibleInLegend(false);
 		series.setYSeries(closePrices);
-		IAxisSet axisSet = chart.getAxisSet();
-		axisSet.adjustRange();
+		axisSetPrice.adjustRange();
 		
-		IAxis xAxis = axisSet.getXAxis(0);
-		IAxis yAxis = axisSet.getYAxis(0);
-		ITitle xAxisTitle = xAxis.getTitle();
-		ITitle yAxisTitle = yAxis.getTitle();
+		//Volume CHART
+		double[] volume = StocksController.getInstance().getArrayOfValues(dateRange, 
+				StockComponent.VOLUME	, tickerSymbolString);
+		IAxisSet volumeAxisSet = volumeChart.getAxisSet();
+		barSeries.setYSeries(volume);
+		volumeAxisSet.adjustRange();
+		
 //TODO: change that for dates and display then vertically		
 //		xAxis.setCategorySeries(new String[] { "Jan", "Feb", "Mar", "Apr", "May" });
-		xAxis.enableCategory(true);
-		xAxisTitle.setText("Date");
-		yAxisTitle.setText("Price");
+		
 		
 		//if new ticker is selected change the range to max
 		if (!previousTickerSymbol.equals(tickerSymbolString)) {
 			dateRangeCombo.select(0);
 		}
-		chart.update();
+		priceChart.update();
 		previousTickerSymbol = tickerSymbolString;
 	}
 }

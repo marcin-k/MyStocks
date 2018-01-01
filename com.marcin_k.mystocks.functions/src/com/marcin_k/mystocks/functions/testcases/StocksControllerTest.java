@@ -13,12 +13,12 @@ class StocksControllerTest {
 //		assertEquals(2	, StocksController.getInstance().getAverage(doubleArray));
 //	}
 	
-	@Test
-	void testFindDecrement() {
-		System.out.println(StocksController.getInstance().findDecrement(4.754, 152.8));
-		System.out.println(StocksController.getInstance().findDecrement(4.754, 4.5));
-		assertEquals(2, StocksController.getInstance().findDecrement(10.0, 7.5));
-	}
+//	@Test
+//	void testFindDecrement() {
+//		System.out.println(StocksController.getInstance().findDecrement(4.754, 152.8));
+//		System.out.println(StocksController.getInstance().findDecrement(4.754, 4.5));
+//		assertEquals(2, StocksController.getInstance().findDecrement(10.0, 7.5));
+//	}
 	
 	
 }

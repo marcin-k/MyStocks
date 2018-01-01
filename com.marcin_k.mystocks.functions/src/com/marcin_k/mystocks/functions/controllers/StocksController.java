@@ -35,6 +35,9 @@ public class StocksController {
 	//stores all Stock objects with their history
 	private ArrayList<Stock> allStocks;
 	
+	//divider for volume
+	private int volumeDivider;
+	
 //------------------------------------------------ Constructor ---------------------------------------------------------
 	private StocksController() {
 		allStocks = new ArrayList<Stock>();
@@ -72,6 +75,10 @@ public class StocksController {
 			return new Stock("error", new ArrayList<DailyStockRecord>());
 		}
 	}
+	
+	public int getVolumeDivider() {
+		return this.volumeDivider;
+	}
 //----------------------------------------- Arrays of values for a graph -----------------------------------------------	
 	//next method?
 	//returns a double array of close prices
@@ -104,56 +111,83 @@ public class StocksController {
 			
 			indexOfArrayToReturn++;
 		}
+		
+//	    !!!!!!!-----------------------USED SEPARETE DIAGRAM FOR VOLUME INSTEAD--------------------------!!!!!!!	
 		// if volume is returned values of the volume are adjusted 
-		// so they fit slightly below price on the chart 
+		// so the two charts align the same way below one another
 		if (valueType == StockComponent.VOLUME) {
-			double averagePrice = getAverage(StocksController.getInstance().getArrayOfValues(dateRange, 
+			double highestPrice = getHighestValue(StocksController.getInstance().getArrayOfValues(dateRange, 
 					StockComponent.CLOSE_PRICE, tickerSymbolString));
-			double averageVolume = getAverage(arrayToReturn);
-			int divider = findDecrement(averagePrice, averageVolume);
+			double highestVolume = getHighestValue(arrayToReturn);
+			int divider = findDecrement(highestPrice, highestVolume);
 			System.out.println("divider - " + divider);
-			System.out.println("avergeprice - " + averagePrice);
-			System.out.println("averageVolume - " + averageVolume);
+			System.out.println("avergeprice - " + highestPrice);
+			System.out.println("averageVolume - " + highestVolume);
 			
 			if (divider > 1) {
-				double[] arrayOfDoubleTest = new double[arrayToReturn.length];
+				double[] decrementedArray = new double[arrayToReturn.length];
 				int index =0;
 				for (int i=0; i<arrayToReturn.length; i++) {
-					arrayOfDoubleTest[i]=arrayToReturn[i]/divider;
+					decrementedArray[i]=arrayToReturn[i]/divider;
 				}
-				return arrayOfDoubleTest;
-			}
-						
+				return decrementedArray;
+			}	
 		}
-		
 		return arrayToReturn;
 	}
 
-//---------------------------------------- Figures out decrement multiplier ---------------------------------------	
-		// find out value to decrement the volume to fit below the
-		// price on the diagram
-		public int findDecrement(double priceAverage, double volumeAverage) {
-			int numberToDevideVolume = 1;
-			while((0.75 * priceAverage) < volumeAverage) {
-				numberToDevideVolume *= 2;
-				volumeAverage/= 2;
-				System.out.println("numberToDevideVolume -"+ numberToDevideVolume);
-				System.out.println("volumeAverage -"+ volumeAverage);
-				
-			}
-			System.out.println("---------------------------------------------------------");
-			return numberToDevideVolume;
+//---------------------------------------- Figures out decrement multiplier --------------------------------------------	
+	// find out value to decrement the volume to fit below the
+	// price on the diagram
+	public int findDecrement(double highPrice, double highVolume) {
+		int numberToDevideVolume = 1;
+		while (highVolume > roundUpNumber(highPrice)) {
+			numberToDevideVolume *= 10;
+			highVolume /= 10;
+
 		}
+		volumeDivider = numberToDevideVolume;
+		System.out.println("number to div " + numberToDevideVolume);
+		return numberToDevideVolume;
+	}
 			
-	
-//------------------------------------------------- Average for a range ------------------------------------------------	
-	//returns an average price/volume for a range passed in
-	private double getAverage(double[] array) {
-		double sum = 0;
-		for(double value: array) {
-			sum+=value;
+//-------------------------------------------- Rounds up number --------------------------------------------------------
+	// round up the number up to make sure the volume and price have the same amount of 
+	// 0's on the diagram
+	private double roundUpNumber(double number) {
+		double roundedNumber = 0;
+		if (number >= 100000) {
+			roundedNumber=999999;
 		}
-		return sum/array.length;
+		else if (number >= 10000) {
+			roundedNumber=99999;
+		}
+		else if (number >= 1000) {
+			roundedNumber=9999;
+		}
+		else if (number >= 100) {
+			roundedNumber=999;
+		}
+		else if (number >= 10) {
+			roundedNumber=99;
+		}
+		else {
+			roundedNumber=9;
+		}
+		
+		return roundedNumber;
+	}
+	
+//------------------------------------------------- Highest for a range ------------------------------------------------	
+	//returns an highest price/volume for a range passed in
+	private double getHighestValue(double[] array) {
+		double highest = 0;
+		for(double value: array) {
+			if (value > highest) {
+				highest = value;
+			}
+		}
+		return highest;
 	}
 	
 //------------------------------------------- Helper method for getters method -----------------------------------------
