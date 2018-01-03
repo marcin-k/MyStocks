@@ -17,6 +17,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -110,15 +111,19 @@ public class Graph {
 		//Group of elements to adjust ranges in the graph
 		Group graphAdjustments = new Group(parent, SWT.NONE);
 		graphAdjustments.setText("Graph Settings");
+		
 		GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 2;
 		graphAdjustments.setLayout(gridLayout);
+		
 		GridData gridData = new GridData(GridData.FILL, GridData.CENTER, true, false);
 		gridData.horizontalSpan = 2;
 		graphAdjustments.setLayoutData(gridData);
-		Label label = new Label(graphAdjustments, SWT.NONE);
-		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-		label.setText("Date Range");
+		
+		Label rangeLabel = new Label(graphAdjustments, SWT.NONE);
+		rangeLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+		rangeLabel.setText("Date Range");
+		
 		
 		
 		//drop down menu for date range
@@ -132,28 +137,41 @@ public class Graph {
 		dateRangeCombo.add("1 week");
 		dateRangeCombo.select(0);
 		
-		
 		dateRangeCombo.addSelectionListener(new SelectionAdapter() {
-		    //refreshes the graph for the date range selected, value of days passed in 
+			// refreshes the graph for the date range selected, value of days passed in
 			// is based on average on number of working days in a year
 			public void widgetSelected(SelectionEvent e) {
-		        if (dateRangeCombo.getText().equals("max")) {
-		        	updateGraph(ticker.getText(), -1);
-		        } else if (dateRangeCombo.getText().equals("3 years")) {
-		        	updateGraph(ticker.getText(), 750);
-		        } else if (dateRangeCombo.getText().equals("1 year")) {
-		        	updateGraph(ticker.getText(), 250);
-		        } else if (dateRangeCombo.getText().equals("6 months")) {
-		        	updateGraph(ticker.getText(), 125);
-		        } else if (dateRangeCombo.getText().equals("3 months")) {
-		        	updateGraph(ticker.getText(), 62);
-		        } else if (dateRangeCombo.getText().equals("1 month")) {
-		        	updateGraph(ticker.getText(), 21);        
-		        } else {
-		        	updateGraph(ticker.getText(), 5); 
-		        }
-		      }
-		    });
+				if (dateRangeCombo.getText().equals("max")) {
+					updateGraph(ticker.getText(), -1);
+				} else if (dateRangeCombo.getText().equals("3 years")) {
+					updateGraph(ticker.getText(), 750);
+				} else if (dateRangeCombo.getText().equals("1 year")) {
+					updateGraph(ticker.getText(), 250);
+				} else if (dateRangeCombo.getText().equals("6 months")) {
+					updateGraph(ticker.getText(), 125);
+				} else if (dateRangeCombo.getText().equals("3 months")) {
+					updateGraph(ticker.getText(), 62);
+				} else if (dateRangeCombo.getText().equals("1 month")) {
+					updateGraph(ticker.getText(), 21);
+				} else {
+					updateGraph(ticker.getText(), 5);
+				}
+			}
+		});
+		
+		Label macdLabel = new Label(graphAdjustments, SWT.NONE);
+		macdLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+		macdLabel.setText("MACD");
+		
+		Button macdButton = new Button(graphAdjustments, SWT.CHECK);
+		macdButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+		
+		macdButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				System.out.println("button pressed, selected: "+macdButton.getSelection());
+			}
+		});
+		
 	}
 	
 //------------------------------- Called to set object from other class ------------------------------------------------	
@@ -218,7 +236,11 @@ public class Graph {
 		if (!previousTickerSymbol.equals(tickerSymbolString)) {
 			dateRangeCombo.select(0);
 		}
-		priceChart.update();
+		
+
+		
+		priceChart.redraw();
+		volumeChart.redraw();
 		previousTickerSymbol = tickerSymbolString;
 	}
 }

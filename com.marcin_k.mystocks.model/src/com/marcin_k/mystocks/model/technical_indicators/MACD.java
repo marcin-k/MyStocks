@@ -71,6 +71,8 @@ public class MACD {
 		fillZeros(EMAb-1, EMAbArray);
 		fillZeros(EMAb-1, MACD);
 		fillZeros((EMAb+EMAc-1), Signal);
+		
+		fillArraysWithNumbers();
 	}
 	
 	//fill the arrays with 0s for the record that can not be calucalted
@@ -82,5 +84,64 @@ public class MACD {
 	
 	//TODO : calculate all of the arrays 
 	//TODO : get return method to get a range required
+	private void fillArraysWithNumbers() {
+		
+		//EMAaArray
+		EMAaArray[EMAa-1] = calculateAverage(getSubArray(closePrices, 0, EMAa));
+		for (int i = EMAa; i< closePrices.length; i++) {
+			EMAaArray[i]=closePrices[i]*(2/(EMAa+1))+EMAaArray[i-1]*(1-(2/(EMAa+1)));
+		}
+		
+		//EMAbArray
+		EMAbArray[EMAb-1] = calculateAverage(getSubArray(closePrices, 0, EMAb));
+		for (int i = EMAb; i < closePrices.length; i++) {
+			EMAbArray[i]=closePrices[i]*(2/(EMAb+1))+EMAaArray[i-1]*(1-(2/(EMAb+1)));
+		}
+		
+		//MACD
+		for (int i = EMAb-1; i < closePrices.length; i++) {
+			MACD[i]=EMAaArray[i]-EMAbArray[i];
+		}
+		
+		//Signal
+		Signal[EMAb+EMAc-1] = calculateAverage(getSubArray(MACD, EMAb-1, EMAb-1+EMAc));
+		for (int i = EMAb+EMAc; i < closePrices.length; i++) {
+			Signal[i]=MACD[i]*(2/(EMAc+1))+Signal[i-1]*(1-(2/(EMAc+1)));
+		}
+	}
 	
+	//returns the double array, sub array of close prices with first and last position of the array
+	private double[] getSubArray(double[] referencedArray, int firstIndex, int lastIndex) {
+		double[] array = new double[lastIndex+1];
+		int positionInNewArray = 0;
+		for(int i=firstIndex; i<array.length; i++) {
+			array[positionInNewArray]=referencedArray[i];
+			positionInNewArray++;
+		}
+		return array;
+		
+	}
+	
+	//returns an average from a array of numbers 
+	private double calculateAverage(double[] numbers) {
+		double sum = 0;
+		for(double number: numbers) {
+			sum += number;
+		}
+		return sum/numbers.length;
+	}
+	
+	//returns last number of records requested for MACD
+	//controller checks if sufficient number is available based on number of 
+	//close price records
+	public double[] getMACD(int numberOfRecords) {
+		return getSubArray(MACD, closePrices.length-1-numberOfRecords, closePrices.length-1);
+	}
+	
+	//returns last number of records requested for Signal
+	//controller checks if sufficient number is available based on number of 
+	//close price records
+	public double[] getSignal(int numberOfRecords) {
+		return getSubArray(Signal, closePrices.length-1-numberOfRecords, closePrices.length-1);
+	}
 }
