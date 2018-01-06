@@ -88,46 +88,70 @@ public class MACD {
 		
 		//EMAaArray
 		EMAaArray[EMAa-1] = calculateAverage(getSubArray(closePrices, 0, EMAa));
-		for (int i = EMAa; i< closePrices.length; i++) {
-			EMAaArray[i]=closePrices[i]*(2/(EMAa+1))+EMAaArray[i-1]*(1-(2/(EMAa+1)));
-		}
 		
+		for (int i = EMAa; i< closePrices.length; i++) {
+			EMAaArray[i]=(closePrices[i]*(2.0/(EMAa+1))) + (EMAaArray[i-1]*(1-(2.0/(EMAa+1))));
+//			System.out.println("EMAaArray "+EMAaArray[i]);
+		}
+	
 		//EMAbArray
 		EMAbArray[EMAb-1] = calculateAverage(getSubArray(closePrices, 0, EMAb));
+//		System.out.println("Average- "+EMAbArray[EMAb-1]);
+		
 		for (int i = EMAb; i < closePrices.length; i++) {
-			EMAbArray[i]=closePrices[i]*(2/(EMAb+1))+EMAaArray[i-1]*(1-(2/(EMAb+1)));
+			EMAbArray[i]=closePrices[i]*(2.0/(EMAb+1))+EMAbArray[i-1]*(1-(2.0/(EMAb+1)));
+//			System.out.println("EMAbArray "+EMAbArray[i]);
 		}
 		
 		//MACD
 		for (int i = EMAb-1; i < closePrices.length; i++) {
 			MACD[i]=EMAaArray[i]-EMAbArray[i];
+//			System.out.println("MACD "+MACD[i]);
+		}
+//TODO: fix signal calulcation		
+		//Signal
+		
+		Signal[EMAb-1+EMAc-1] = calculateAverage(getSubArray(MACD, EMAb-1, EMAb-1+EMAc));
+//		System.out.println("average "+Signal[EMAb+EMAc-1]);
+				
+		for (int i = EMAb+EMAc-1; i < closePrices.length; i++) {
+			Signal[i] = MACD[i]*(2.0/(EMAc+1))+Signal[i-1]*(1-(2.0/(EMAc+1)));
+//			System.out.println("Signal " + Signal[i]);
 		}
 		
-		//Signal
-		Signal[EMAb+EMAc-1] = calculateAverage(getSubArray(MACD, EMAb-1, EMAb-1+EMAc));
-		for (int i = EMAb+EMAc; i < closePrices.length; i++) {
-			Signal[i]=MACD[i]*(2/(EMAc+1))+Signal[i-1]*(1-(2/(EMAc+1)));
-		}
+//		closePrices;
+//		private double[] EMAaArray;
+//		private double[] EMAbArray;
+//		private double[] MACD;
+//		private double[] Signal;
+		
+//		for (double d : Signal) {
+//			System.out.println("Signal: "+d);
+//		}
 	}
 	
 	//returns the double array, sub array of close prices with first and last position of the array
 	private double[] getSubArray(double[] referencedArray, int firstIndex, int lastIndex) {
-		double[] array = new double[lastIndex+1];
+		double[] array = new double[lastIndex-firstIndex];
 		int positionInNewArray = 0;
-		for(int i=firstIndex; i<array.length; i++) {
+		for(int i=firstIndex; i<lastIndex; i++) {
 			array[positionInNewArray]=referencedArray[i];
+//			System.out.println("getSubArray "	+array[positionInNewArray]);
 			positionInNewArray++;
 		}
 		return array;
 		
 	}
-	
+	//*
 	//returns an average from a array of numbers 
 	private double calculateAverage(double[] numbers) {
 		double sum = 0;
 		for(double number: numbers) {
+//			System.out.println("number: "+number);
 			sum += number;
+//			System.out.println("calc average "	+number);
 		}
+		System.out.println("calc average numbers "	+numbers.length);
 		return sum/numbers.length;
 	}
 	
@@ -135,6 +159,10 @@ public class MACD {
 	//controller checks if sufficient number is available based on number of 
 	//close price records
 	public double[] getMACD(int numberOfRecords) {
+//		for(double d: getSubArray(MACD, closePrices.length-1-numberOfRecords, closePrices.length-1)) {
+//			System.out.println("whats MACD sees: "+d);
+//		}
+		
 		return getSubArray(MACD, closePrices.length-1-numberOfRecords, closePrices.length-1);
 	}
 	

@@ -6,6 +6,8 @@ import com.marcin_k.mystocks.functions.filesHandlers.ReadStockFile;
 import com.marcin_k.mystocks.model.DailyStockRecord;
 import com.marcin_k.mystocks.model.Stock;
 import com.marcin_k.mystocks.model.StockComponent;
+import com.marcin_k.mystocks.model.exceptions.NotEnoughRecordsException;
+import com.marcin_k.mystocks.model.technical_indicators.MACD;
 
 /***********************************************************
  * Controller utilise the Singleton design pattern/
@@ -37,6 +39,9 @@ public class StocksController {
 	
 	//divider for volume
 	private int volumeDivider;
+	
+	//to maintain one object for MACD and MACD_SINGAL
+	private MACD macd;
 	
 //------------------------------------------------ Constructor ---------------------------------------------------------
 	private StocksController() {
@@ -97,6 +102,27 @@ public class StocksController {
 		if (arrayToReturn.length != getStockWithTicker(tickerSymbolString).getDailyRecords().size()) {
 			firstRecordToReturn = getStockWithTicker(tickerSymbolString).getDailyRecords().size() - 
 					arrayToReturn.length;
+		}
+		if (valueType == StockComponent.MACD) {
+			try {
+				
+//				for (double d : getArrayOfValues(-1, StockComponent.CLOSE_PRICE, tickerSymbolString)) {
+//					System.out.println("what is being created as object: " + d);
+//				}
+				macd = new MACD(getArrayOfValues(-1, StockComponent.CLOSE_PRICE, tickerSymbolString));
+//				System.out.println("date range_ "+dateRange);
+//				for(double d: macd.getMACD(dateRange)) {
+//					System.out.println("whats controller sees: "+d);
+//				}
+				
+				return macd.getMACD(dateRange);
+			} catch (NotEnoughRecordsException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if (valueType == StockComponent.MACD_SIGNAL) {
+			return macd.getSignal(dateRange);
 		}
 		
 		for(int i=firstRecordToReturn; i<getStockWithTicker(tickerSymbolString).getDailyRecords().size(); i++) {

@@ -6,5 +6,5 @@ package com.marcin_k.mystocks.model;
  *
  ****************************************/
 public enum StockComponent {
-	DATE, OPEN_PRICE, HIGH_PRICE, LOW_PRICE, CLOSE_PRICE, VOLUME;
+	DATE, OPEN_PRICE, HIGH_PRICE, LOW_PRICE, CLOSE_PRICE, VOLUME, MACD, MACD_SIGNAL;
 }

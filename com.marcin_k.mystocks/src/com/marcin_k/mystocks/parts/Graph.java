@@ -16,10 +16,12 @@ import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -62,6 +64,8 @@ public class Graph {
 	//used to track if during the update different ticker was selected
 	//if so range is changed to max
 	private String previousTickerSymbol ="";
+	Button macdButton;
+	private int dateRange;
 	
 //-------------------------------------------- Create Controls ---------------------------------------------------------	
 	@PostConstruct
@@ -143,18 +147,25 @@ public class Graph {
 			public void widgetSelected(SelectionEvent e) {
 				if (dateRangeCombo.getText().equals("max")) {
 					updateGraph(ticker.getText(), -1);
+					dateRange = -1;
 				} else if (dateRangeCombo.getText().equals("3 years")) {
 					updateGraph(ticker.getText(), 750);
+					dateRange = 750;
 				} else if (dateRangeCombo.getText().equals("1 year")) {
 					updateGraph(ticker.getText(), 250);
+					dateRange = 250;
 				} else if (dateRangeCombo.getText().equals("6 months")) {
 					updateGraph(ticker.getText(), 125);
+					dateRange = 125;
 				} else if (dateRangeCombo.getText().equals("3 months")) {
 					updateGraph(ticker.getText(), 62);
+					dateRange = 62;
 				} else if (dateRangeCombo.getText().equals("1 month")) {
 					updateGraph(ticker.getText(), 21);
+					dateRange = 21;
 				} else {
 					updateGraph(ticker.getText(), 5);
+					dateRange = 5;
 				}
 			}
 		});
@@ -163,15 +174,16 @@ public class Graph {
 		macdLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 		macdLabel.setText("MACD");
 		
-		Button macdButton = new Button(graphAdjustments, SWT.CHECK);
+		macdButton = new Button(graphAdjustments, SWT.CHECK);
 		macdButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 		
 		macdButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				System.out.println("button pressed, selected: "+macdButton.getSelection());
+				if (!ticker.getText().equals("")) {
+					updateGraph(ticker.getText(), dateRange);
+				}
 			}
 		});
-		
 	}
 	
 //------------------------------- Called to set object from other class ------------------------------------------------	
@@ -209,7 +221,7 @@ public class Graph {
 		//Price CHART
 		//update title
 		ITitle graphTitle = priceChart.getTitle();
-		graphTitle.setText(ticker.getText());
+		graphTitle.setText(tickerSymbolString);
 						 //returns a double array of close prices based on ticker provided
 		double[] closePrices = StocksController.getInstance().getArrayOfValues(dateRange, 
 				StockComponent.CLOSE_PRICE, tickerSymbolString);
@@ -237,11 +249,47 @@ public class Graph {
 			dateRangeCombo.select(0);
 		}
 		
-
+		if (macdButton.getSelection()) {
+			drawMACD(tickerSymbolString);
+		}
 		
 		priceChart.redraw();
 		volumeChart.redraw();
 		previousTickerSymbol = tickerSymbolString;
 	}
+	
+//------------------------------------- Draw MACD on the graph ---------------------------------------------------------
+	
+	private void drawMACD(String tickerString) {
+		double[] macdLine = StocksController.getInstance().getArrayOfValues(dateRange, StockComponent.MACD, tickerString);
+		
+//		System.out.println(macdLine[0]);
+//		for(double d: macdLine) {
+//			System.out.println("whats comes back from controller: "+d);
+//		}
+		
+		ILineSeries macdSeries = (ILineSeries) priceChart.getSeriesSet().createSeries(SeriesType.LINE,
+				"macd line series");
+		Color color = new Color(Display.getDefault(), 0, 153, 255);
+		macdSeries.setLineColor(color);
+		macdSeries.setSymbolType(PlotSymbolType.NONE);
+		// hides the legend
+		macdSeries.setVisibleInLegend(false);
+		macdSeries.setYSeries(macdLine);
+
+		double[] macdSignalLine = StocksController.getInstance().getArrayOfValues(dateRange, StockComponent.MACD_SIGNAL,
+				tickerString);
+		ILineSeries macdSignalSeries = (ILineSeries) priceChart.getSeriesSet().createSeries(SeriesType.LINE,
+				"macd-signal line series");
+		Color color2 = new Color(Display.getDefault(), 255, 0, 0);
+		macdSignalSeries.setLineColor(color2);
+		macdSignalSeries.setSymbolType(PlotSymbolType.NONE);
+		// hides the legend
+		macdSignalSeries.setVisibleInLegend(false);
+		macdSignalSeries.setYSeries(macdSignalLine);
+
+		axisSetPrice.adjustRange();
+	}
+	
 }
 
