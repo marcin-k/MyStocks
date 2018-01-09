@@ -139,8 +139,7 @@ public class MACD {
 //			System.out.println("getSubArray "	+array[positionInNewArray]);
 			positionInNewArray++;
 		}
-		return array;
-		
+		return array;	
 	}
 	//*
 	//returns an average from a array of numbers 
@@ -155,21 +154,32 @@ public class MACD {
 		return sum/numbers.length;
 	}
 	
+	//increments the every element in the array by the value passed in
+	private double [] incrementElements(double[] array, double increment) {
+		double [] arrayToBeReturned = new double[array.length];
+		for (int i=0; i<array.length; i++) {
+			arrayToBeReturned[i]=array[i]+increment;
+		}
+		return arrayToBeReturned;
+	}
+	
 	//returns last number of records requested for MACD
 	//controller checks if sufficient number is available based on number of 
 	//close price records
-	public double[] getMACD(int numberOfRecords) {
+	public double[] getMACD(int numberOfRecords, double increment) {
 //		for(double d: getSubArray(MACD, closePrices.length-1-numberOfRecords, closePrices.length-1)) {
 //			System.out.println("whats MACD sees: "+d);
 //		}
 		
-		return getSubArray(MACD, closePrices.length-1-numberOfRecords, closePrices.length-1);
+		return incrementElements(getSubArray(MACD, closePrices.length-1-numberOfRecords, closePrices.length-1), 
+				increment);
 	}
 	
 	//returns last number of records requested for Signal
 	//controller checks if sufficient number is available based on number of 
 	//close price records
-	public double[] getSignal(int numberOfRecords) {
-		return getSubArray(Signal, closePrices.length-1-numberOfRecords, closePrices.length-1);
+	public double[] getSignal(int numberOfRecords, double increment) {
+		return incrementElements(getSubArray(Signal, closePrices.length-1-numberOfRecords, closePrices.length-1), 
+				increment);
 	}
 }

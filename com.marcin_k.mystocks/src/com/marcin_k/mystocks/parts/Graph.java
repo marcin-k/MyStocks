@@ -40,6 +40,7 @@ import com.marcin_k.mystocks.functions.controllers.StocksController;
 import com.marcin_k.mystocks.model.IDownloadStocksService;
 import com.marcin_k.mystocks.model.Stock;
 import com.marcin_k.mystocks.model.StockComponent;
+import com.marcin_k.mystocks.model.exceptions.NotEnoughRecordsException;
 
 /****************************************************************
  * GUI class, used to display a stock chart.
@@ -66,6 +67,11 @@ public class Graph {
 	private String previousTickerSymbol ="";
 	Button macdButton;
 	private int dateRange;
+	
+	//MACD line series
+	ILineSeries macdSeries;
+	ILineSeries macdSignalSeries;
+	
 	
 //-------------------------------------------- Create Controls ---------------------------------------------------------	
 	@PostConstruct
@@ -217,7 +223,7 @@ public class Graph {
 	//Updates graph for a stock with a ticker passed in
 	//dateRange represents number of days to display, if -1 passed all data is displayed
 	private void updateGraph(String tickerSymbolString, int dateRange) {
-		
+		try {
 		//Price CHART
 		//update title
 		ITitle graphTitle = priceChart.getTitle();
@@ -236,9 +242,17 @@ public class Graph {
 		//Volume CHART
 		double[] volume = StocksController.getInstance().getArrayOfValues(dateRange, 
 				StockComponent.VOLUME	, tickerSymbolString);
+		
+		
 		IAxisSet volumeAxisSet = volumeChart.getAxisSet();
 		barSeries.setYSeries(volume);
 		volumeAxisSet.adjustRange();
+		
+		}catch (NotEnoughRecordsException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+
 		
 //TODO: change that for dates and display then vertically		
 //		xAxis.setCategorySeries(new String[] { "Jan", "Feb", "Mar", "Apr", "May" });
@@ -247,10 +261,30 @@ public class Graph {
 		//if new ticker is selected change the range to max
 		if (!previousTickerSymbol.equals(tickerSymbolString)) {
 			dateRangeCombo.select(0);
+			macdButton.setSelection(false);
 		}
 		
+//TODO: need to find more elegant way to create those series
+//		if the series are not used the below doesnt need to be executed 
+		
+		macdSeries = (ILineSeries) priceChart.getSeriesSet().createSeries(SeriesType.LINE,
+				"macd line series");
+		macdSignalSeries = (ILineSeries) priceChart.getSeriesSet().createSeries(SeriesType.LINE,
+				"macd-signal line series");
 		if (macdButton.getSelection()) {
-			drawMACD(tickerSymbolString);
+			try {
+				drawMACD(tickerSymbolString, dateRange);
+			} catch (NotEnoughRecordsException e) {
+				// TODO Auto-generated catch block
+				System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+				e.printStackTrace();
+				priceChart.getSeriesSet().deleteSeries("macd line series");
+				priceChart.getSeriesSet().deleteSeries("macd-signal line series");
+			}
+		}
+		else {
+			priceChart.getSeriesSet().deleteSeries("macd line series");
+			priceChart.getSeriesSet().deleteSeries("macd-signal line series");
 		}
 		
 		priceChart.redraw();
@@ -260,35 +294,37 @@ public class Graph {
 	
 //------------------------------------- Draw MACD on the graph ---------------------------------------------------------
 	
-	private void drawMACD(String tickerString) {
-		double[] macdLine = StocksController.getInstance().getArrayOfValues(dateRange, StockComponent.MACD, tickerString);
-		
-//		System.out.println(macdLine[0]);
-//		for(double d: macdLine) {
-//			System.out.println("whats comes back from controller: "+d);
-//		}
-		
-		ILineSeries macdSeries = (ILineSeries) priceChart.getSeriesSet().createSeries(SeriesType.LINE,
-				"macd line series");
-		Color color = new Color(Display.getDefault(), 0, 153, 255);
-		macdSeries.setLineColor(color);
-		macdSeries.setSymbolType(PlotSymbolType.NONE);
-		// hides the legend
-		macdSeries.setVisibleInLegend(false);
-		macdSeries.setYSeries(macdLine);
+	private void drawMACD(String tickerString, int dateRange) throws NotEnoughRecordsException {
 
-		double[] macdSignalLine = StocksController.getInstance().getArrayOfValues(dateRange, StockComponent.MACD_SIGNAL,
-				tickerString);
-		ILineSeries macdSignalSeries = (ILineSeries) priceChart.getSeriesSet().createSeries(SeriesType.LINE,
-				"macd-signal line series");
-		Color color2 = new Color(Display.getDefault(), 255, 0, 0);
-		macdSignalSeries.setLineColor(color2);
-		macdSignalSeries.setSymbolType(PlotSymbolType.NONE);
-		// hides the legend
-		macdSignalSeries.setVisibleInLegend(false);
-		macdSignalSeries.setYSeries(macdSignalLine);
+			double[] macdLine = StocksController.getInstance().getArrayOfValues(dateRange, StockComponent.MACD, tickerString);
+			
+	//		System.out.println(macdLine[0]);
+	//		for(double d: macdLine) {
+	//			System.out.println("whats comes back from controller: "+d);
+	//		}
+			
+	
+			Color color = new Color(Display.getDefault(), 0, 153, 255);
+			macdSeries.setLineColor(color);
+			macdSeries.setSymbolType(PlotSymbolType.NONE);
+			// hides the legend
+			macdSeries.setVisibleInLegend(false);
+			macdSeries.setYSeries(macdLine);
+	
+			double[] macdSignalLine = StocksController.getInstance().getArrayOfValues(dateRange, StockComponent.MACD_SIGNAL,
+					tickerString);
+	
+			Color color2 = new Color(Display.getDefault(), 255, 0, 0);
+			macdSignalSeries.setLineColor(color2);
+			macdSignalSeries.setSymbolType(PlotSymbolType.NONE);
+			// hides the legend
+			macdSignalSeries.setVisibleInLegend(false);
+			macdSignalSeries.setYSeries(macdSignalLine);
+	
+			
+			
+			axisSetPrice.adjustRange();
 
-		axisSetPrice.adjustRange();
 	}
 	
 }

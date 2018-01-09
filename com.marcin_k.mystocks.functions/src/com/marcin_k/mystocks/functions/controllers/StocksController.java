@@ -89,7 +89,9 @@ public class StocksController {
 	//returns a double array of close prices
 	//dateRange defines how many records to return
 	//if -1 is passed in all records are returned
-	public double[] getArrayOfValues(int dateRange, StockComponent valueType, String tickerSymbolString) {
+	public double[] getArrayOfValues(int dateRange, StockComponent valueType, String tickerSymbolString) throws 
+	NotEnoughRecordsException {
+		
 		double [] arrayToReturn;
 		int firstRecordToReturn = 0;
 		int indexOfArrayToReturn = 0;
@@ -104,7 +106,7 @@ public class StocksController {
 					arrayToReturn.length;
 		}
 		if (valueType == StockComponent.MACD) {
-			try {
+
 				
 //				for (double d : getArrayOfValues(-1, StockComponent.CLOSE_PRICE, tickerSymbolString)) {
 //					System.out.println("what is being created as object: " + d);
@@ -115,14 +117,17 @@ public class StocksController {
 //					System.out.println("whats controller sees: "+d);
 //				}
 				
-				return macd.getMACD(dateRange);
-			} catch (NotEnoughRecordsException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+				//lowest value is passed in to move the macd diagram to align within the same range as the price
+				//of the stock
+				return macd.getMACD(dateRange, getLowestValue(getArrayOfValues(dateRange, StockComponent.CLOSE_PRICE, 
+						tickerSymbolString)));
+
 		}
 		if (valueType == StockComponent.MACD_SIGNAL) {
-			return macd.getSignal(dateRange);
+			//lowest value is passed in to move the macd diagram to align within the same range as the price
+			//of the stock
+			return macd.getSignal(dateRange, getLowestValue(getArrayOfValues(dateRange, StockComponent.CLOSE_PRICE, 
+					tickerSymbolString)));
 		}
 		
 		for(int i=firstRecordToReturn; i<getStockWithTicker(tickerSymbolString).getDailyRecords().size(); i++) {
@@ -138,7 +143,6 @@ public class StocksController {
 			indexOfArrayToReturn++;
 		}
 		
-//	    !!!!!!!-----------------------USED SEPARETE DIAGRAM FOR VOLUME INSTEAD--------------------------!!!!!!!	
 		// if volume is returned values of the volume are adjusted 
 		// so the two charts align the same way below one another
 		if (valueType == StockComponent.VOLUME) {
@@ -212,6 +216,18 @@ public class StocksController {
 		return highest;
 	}
 	
+//-------------------------------------------------- Lowest for a range ------------------------------------------------	
+	//returns the lowest price/volume for a range passed in
+	private double getLowestValue(double[] array) {
+			double lowest = array[0];
+			for(double value: array) {
+				if (value < lowest) {
+					lowest = value;
+				}
+			}
+			return lowest;
+		}
+			
 //------------------------------------------- Helper method for getters method -----------------------------------------
 	// Method helps getters methods which returns arrays of double values to figure out
 	// size of the array 
