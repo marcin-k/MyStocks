@@ -13,6 +13,7 @@ import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -24,6 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.swtchart.Chart;
 import org.swtchart.IAxis;
@@ -75,7 +77,7 @@ public class Graph {
 	
 //-------------------------------------------- Create Controls ---------------------------------------------------------	
 	@PostConstruct
-	public void createControls( Composite parent, IDownloadStocksService downloadStocksService) {
+	public void createControls( Composite parent, IDownloadStocksService downloadStocksService, final Shell shell) {
 		parent.setLayout(new GridLayout(1, false));
 
 		//LABEL
@@ -186,7 +188,18 @@ public class Graph {
 		macdButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				if (!ticker.getText().equals("")) {
-					updateGraph(ticker.getText(), dateRange);
+					if (dateRangeCombo.getText().equals("max")) {
+						MessageDialog.openInformation(shell, "MACD", "MACD can only be calculated for max range "
+								+ "of 3 years");
+						macdButton.setSelection(false);
+					}
+					else {
+						updateGraph(ticker.getText(), dateRange);
+					}
+				}
+				// if no stock is selected macd can not be ticked
+				else {
+					macdButton.setSelection(false);
 				}
 			}
 		});
