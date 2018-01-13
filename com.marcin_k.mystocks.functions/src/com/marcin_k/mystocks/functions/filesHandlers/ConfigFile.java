@@ -20,14 +20,13 @@ import java.time.format.DateTimeFormatter;
 public class ConfigFile {
 	
 	/** Variables **/
-	//TODO: read file and update date - if filed download
-	//		do nothing if date is the same in the file as current
-	//		create a default configuration file 
+	//default values only used if file is missing or corrupted
 	String zipFileName ="stocksListing.zip";
 	String filesExportedDirectoryName= "filesExported";
-	String URLOfZippedStockFiles = "http://bossa.pl/pub/metastock/mstock/mstall.zip";
+	String URLOfZippedStockFiles = "http://bossa.pl/pub/ciagle/mstock/mstcgl.zip";
 	String lastModificationDate = "0000-00-00 00:00:00";
 	String FILENAME = "config.txt";
+	String prefixesToSkip = "INTL,INTS,BPHFI,RC,DB,TRIGONPP,UCEX,KBC";
 	
 //--------------------------------------------- Constructor ------------------------------------------------------------	
 	public ConfigFile(){
@@ -55,11 +54,14 @@ public class ConfigFile {
 							else if (linesToRead==4) {
 								lastModificationDate=sCurrentLine;
 							}
+							else if (linesToRead==5) {
+								prefixesToSkip=sCurrentLine;
+							}
 							linesToRead++;
 						}
 				}
 			}
-			if (linesToRead!=5) {
+			if (linesToRead!=6) {
 				throw new IOException();
 			}
 
@@ -67,6 +69,7 @@ public class ConfigFile {
 			System.out.println(filesExportedDirectoryName);
 			System.out.println(URLOfZippedStockFiles);
 			System.out.println(lastModificationDate);
+			System.out.println(prefixesToSkip);
 			
 		} catch (IOException e) {
 			//if the IO Exception occurs the default file is created
@@ -113,9 +116,13 @@ public class ConfigFile {
 				URLOfZippedStockFiles+"\n" + 
 				"\n" + 
 				"# Date of the last update (not to be updated by a user)\n" + 
-				updatedDate;
+				updatedDate +"\n"+
+				"\n" +
+				"# Prefixes of the filenames to be excluded from the system \n" + 
+				"#(investment funds etc..)\n" + 
+				prefixesToSkip;
 		
-		File configFile = new File("config.txt");
+		File configFile = new File(FILENAME);
 		try {
 			configFile.createNewFile();
 			FileOutputStream fileOutputStream = new FileOutputStream(configFile, false);
@@ -142,5 +149,7 @@ public class ConfigFile {
 	public String getLastModificationDate() {
 		return lastModificationDate;
 	}
-	
+	public String getPrefixesToDelete() {
+		return prefixesToSkip;
+	}
 }

@@ -8,10 +8,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-
 import com.marcin_k.mystocks.functions.filesHandlers.ConfigFile;
 import com.marcin_k.mystocks.functions.filesHandlers.UnzipUtility;
 
@@ -87,7 +90,7 @@ public class FilesController {
 		if (!(dateNow.substring(0, 10).equals(lastUpdateDate.substring(0, 10)))) {
 			downloadFile();
 			unzipUtility.unzip(sourceDirectory, destDirectory);
-			deleteZIP();
+			deleteUnusedFiles(configFile.getPrefixesToDelete());
 		}
 		//creates objects of all download files
 		StocksController.getInstance().setupStocks(getAllTickers());
@@ -131,9 +134,23 @@ public class FilesController {
 		unzipUtility.unzip(sourceDirectory, destDirectory);
 	}
 	
-//---------------------------------------------- Deletes the ZIP file --------------------------------------------------
-	private void deleteZIP() {
+//---------------------------------- Deletes the ZIP file and unused stock files----------------------------------------
+	public void deleteUnusedFiles(String prefixesToOfFilesToBeDeleted) {
+		//delete ZIP file
 		File file = new File(sourceDirectory);
 	    file.delete();
+	    
+	    //deletes other files
+	    String[] prefixes = prefixesToOfFilesToBeDeleted.split(",");
+	    //looping though all prefixes and deletes all files that match them
+	    for(int i=0; i<prefixes.length; i++) {
+		    try (DirectoryStream<Path> newDirectoryStream = Files.newDirectoryStream(Paths.get(destDirectory), prefixes[i] + "*")) {
+		        for (final Path newDirectoryStreamItem : newDirectoryStream) {
+		            Files.delete(newDirectoryStreamItem);
+		        }
+		    } catch (final Exception e) {
+		        e.printStackTrace();
+		    }
+	    }
 	}
 }

@@ -57,7 +57,7 @@ public class Recommendations {
 			}			
 		});
 		stockNameCol.getColumn().setWidth(150);
-		stockNameCol.getColumn().setText("Thicker");
+		stockNameCol.getColumn().setText("Ticker");
 		
 		//creates column for recommendations
 		TableViewerColumn recommendationsCol = new TableViewerColumn(viewer, SWT.None);

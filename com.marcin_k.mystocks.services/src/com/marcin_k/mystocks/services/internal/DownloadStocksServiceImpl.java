@@ -1,6 +1,7 @@
 package com.marcin_k.mystocks.services.internal;
 
 import com.marcin_k.mystocks.functions.controllers.FilesController;
+import com.marcin_k.mystocks.functions.controllers.MyPortfolioController;
 import com.marcin_k.mystocks.model.IDownloadStocksService;
 
 /**********************************************************
@@ -26,5 +27,7 @@ public class DownloadStocksServiceImpl implements IDownloadStocksService{
 				+ "******************************service running******************************\n"
 				+ "***************************************************************************");
 		FilesController.getInstance().getAllFiles();
+		MyPortfolioController.getInstance();
+		
 	}
 }

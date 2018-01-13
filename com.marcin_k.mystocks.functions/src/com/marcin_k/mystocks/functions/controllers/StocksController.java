@@ -10,7 +10,7 @@ import com.marcin_k.mystocks.model.exceptions.NotEnoughRecordsException;
 import com.marcin_k.mystocks.model.technical_indicators.MACD;
 
 /***********************************************************
- * Controller utilise the Singleton design pattern/
+ * Controller utilise the Singleton design pattern
  * StockController deals witch the queries made on Stocks
  * objects, contains array list of all stock objects.
  *
@@ -36,6 +36,8 @@ public class StocksController {
 	/** Variables **/
 	//stores all Stock objects with their history
 	private ArrayList<Stock> allStocks;
+	//stores a String array of tickers
+	private ArrayList<String> tickersArray;
 	
 	//divider for volume
 	private int volumeDivider;
@@ -46,6 +48,14 @@ public class StocksController {
 //------------------------------------------------ Constructor ---------------------------------------------------------
 	private StocksController() {
 		allStocks = new ArrayList<Stock>();
+		
+		tickersArray = new ArrayList<>();
+		int count =0;
+		for(Stock stock : allStocks) {
+			System.out.println("setting up array of strings "+stock.getTicker());
+			tickersArray.set(count, stock.getTicker());
+			count++;
+		}
 	}
 	
 //----------------------------------- Setup method creates all allStocks Object ----------------------------------------	
@@ -63,6 +73,10 @@ public class StocksController {
 	//get all stocks object
 	public ArrayList<Stock> getAllStocksObjects(){
 		return allStocks;
+	}
+	
+	public ArrayList<String> getAllTickers(){
+		return tickersArray;
 	}
 	
 	//returns a Stock object with a ticker symbol passed in

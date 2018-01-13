@@ -28,4 +28,8 @@ filesExported
 http://bossa.pl/pub/metastock/mstock/mstall.zip
 
 # Date of the last update (not to be updated by a user)
-2017-12-20 22:50:18
+2018-01-13 21:52:28
+
+# Prefixes of the filenames to be excluded from the system 
+#(investment funds etc..)
+INTL,BPHFI,RC,DB,TRIGONPP,UCEX

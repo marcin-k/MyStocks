@@ -13,6 +13,9 @@ import org.eclipse.e4.core.commands.EHandlerService;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
@@ -27,13 +30,13 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 
+import com.marcin_k.mystocks.functions.controllers.MyPortfolioController;
 import com.marcin_k.mystocks.handlers.NewPortfolioStockHandler;
+import com.marcin_k.mystocks.model.Stock;
 
 public class MyPortfolio {
 	
 	/** Variables **/
-	//Stocks Table
-	private TableViewer viewer;
 	
 	//Signals Table
 	private TableViewer signalViewer;
@@ -44,91 +47,89 @@ public class MyPortfolio {
 	@Inject
 	ECommandService commandService;
 	
+
+	private TableViewer viewer;
+	
 	@PostConstruct
 	public void createControls( Composite parent) {
-		
 		parent.setLayout(new GridLayout(1, false));		
 		
 		//--------------------------TABLE--------------------------
 		viewer = new TableViewer(parent, SWT.MULTI|SWT.FULL_SELECTION);
-		Table table = viewer.getTable();
-		table.setHeaderVisible(true);
-		table.setLinesVisible(true);
-		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		viewer.setContentProvider(ArrayContentProvider.getInstance());
+		
+		GridData tableGrid = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		tableGrid.heightHint = 150;
 		
 		
-		GridData gridLabel = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1); 
-		gridLabel.minimumWidth = 160;
-		table.setLayoutData( gridLabel); 
+	    Table table = viewer.getTable();
+	    table.setHeaderVisible(true);
+	    table.setLinesVisible(true);
+	    table.setLayoutData(tableGrid);
+	    viewer.setContentProvider(ArrayContentProvider.getInstance());
 		
-//		viewer.setInput(<arrayList> as input);
-		ArrayList<String> test = new ArrayList<>();
-		test.add("test1");
-		test.add("test2");
+//--------------------------------------------TESTING-------------------------------------------------------------------		
 		
-		viewer.setInput(test);
-		
-		//creates column for stock symbol
-		TableViewerColumn stockNameCol = new TableViewerColumn(viewer, SWT.None);
-		stockNameCol.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				//<myObjectType> obj = (<myObjectType>) element;
-				//return obj.someMethod();
-				return "test123";
-			}			
-		});
-		stockNameCol.getColumn().setWidth(150);
-		stockNameCol.getColumn().setText("Thicker");
-		
-		//creates column for recommendations
-		TableViewerColumn recommendationsCol = new TableViewerColumn(viewer, SWT.None);
-		recommendationsCol.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				//<myObjectType> obj = (<myObjectType>) element;
-				//return obj.someMethod();
-				return "test456";
-			}			
-		});
-		recommendationsCol.getColumn().setWidth(150);
-		recommendationsCol.getColumn().setText("Change 24H");
-	
-		//--------------------------Button to add more stocks to list--------------------------
-		Button addButton = new Button(parent, SWT.BORDER);
-		addButton.setText("Add Stock");
-		GridData gridLabel3 = new GridData( SWT.CENTER, SWT.CENTER, true, false); 
-		gridLabel.minimumWidth = 160;
-		addButton.setLayoutData( gridLabel3); 
-		
-		addButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				
-				Command command = commandService.getCommand("com.marcin_k.mystocks.command.newportfoliostock");
+		    // create column for the summary property
+		    TableViewerColumn colSummary = new TableViewerColumn(viewer, SWT.NONE);
+		    colSummary.setLabelProvider(new ColumnLabelProvider() {
+		      @Override
+		      public String getText(Object element) {
+		        Stock todo = (Stock) element;
+		        return todo.getTicker();
+		      }
+		    });
+		    colSummary.getColumn().setWidth(100);
+		    colSummary.getColumn().setText("Summary");
 
-				// check if the command is defined
-				System.out.println(command.isDefined());
+		    // create column for description property
+		    TableViewerColumn colDescription = new TableViewerColumn(viewer, SWT.NONE);
+		    colDescription.setLabelProvider(new ColumnLabelProvider() {
+		      @Override
+		      public String getText(Object element) {
+		        Stock todo = (Stock) element;
+		        return todo.getTicker();
+		      }
+		    });
+		    colDescription.getColumn().setWidth(200);
+		    colDescription.getColumn().setText("Description");
 
-				// activate handler, assumption: the AboutHandler() class exists already
-				handlerService.activateHandler("com.marcin_k.mystocks.command.newportfoliostock", 
-				    new NewPortfolioStockHandler());
+		    // initially the table is also filled
+		    // the button is used to update the data if the model changes
+		    viewer.setInput(ArrayContentProvider.getInstance());
+		    viewer.setInput(MyPortfolioController.getInstance().getMyPortfolioStocks());
+		
+		    
+		    // calling the command to add new stock
+			Button addStockButton = new Button(parent, SWT.NONE);
+			addStockButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+			addStockButton.setText("Add Stock to Portfolio");
+			
+			addStockButton.addSelectionListener(new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent e) {
+					Command command = commandService.getCommand("com.marcin_k.mystocks.command.newportfoliostock");
 
-				// prepare execution of command
-				ParameterizedCommand cmd =
-				  commandService.createCommand("com.marcin_k.mystocks.command.newportfoliostock", null);
+					// check if the command is defined
+					System.out.println(command.isDefined());
 
-				// check if the command can get executed
-				if (handlerService.canExecute(cmd)){
-				  // execute the command
-				  handlerService.executeHandler(cmd);
+					// activate handler, assumption: the AboutHandler() class exists already
+					handlerService.activateHandler("com.marcin_k.mystocks.command.newportfoliostock", 
+					    new NewPortfolioStockHandler());
+
+					// prepare execution of command
+					ParameterizedCommand cmd =
+					  commandService.createCommand("com.marcin_k.mystocks.command.newportfoliostock", null);
+
+					// check if the command can get executed
+					if (handlerService.canExecute(cmd)){
+					  // execute the command
+					  handlerService.executeHandler(cmd);
+					}
+
 				}
-				
-			}
-		});
-		
-		
-		
+			});
+		    
+		    	
+//---------------------------------------------TESTING------------------------------------------------------------------		
 		
 		//--------------------------STOCK SIGNALS--------------------------
 		Group signalGroup = new Group(parent, SWT.NONE);
@@ -138,8 +139,6 @@ public class MyPortfolio {
 		gridLayout.numColumns = 2;
 		signalGroup.setLayout(gridLayout);
 
-		
-		
 		org.eclipse.swt.widgets.Label macdLabel = new org.eclipse.swt.widgets.Label(signalGroup, SWT.NONE);
 		macdLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 		macdLabel.setText("MACD(12,26,9)");
@@ -150,7 +149,14 @@ public class MyPortfolio {
 		//sets a colour to green
 		macdIndicator.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_GREEN));
 
-		
+	    viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+	    	  @Override
+	    	  public void selectionChanged(SelectionChangedEvent event) {
+	    	    IStructuredSelection selection = viewer.getStructuredSelection();
+	    	    Stock firstElement = (Stock)selection.getFirstElement();
+	    	    macdIndicator.setText(firstElement.getTicker());
+	    	  }
+	    }); 
 		
 	}
 }
