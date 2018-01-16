@@ -2,6 +2,7 @@ package com.marcin_k.mystocks.parts;
 
 import java.awt.Label;
 import java.util.ArrayList;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -10,6 +11,8 @@ import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.e4.core.commands.ECommandService;
 import org.eclipse.e4.core.commands.EHandlerService;
+import org.eclipse.e4.core.di.annotations.Optional;
+import org.eclipse.e4.ui.di.UIEventTopic;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -30,9 +33,11 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 
+import com.marcin_k.mystocks.events.MyEventConstants;
 import com.marcin_k.mystocks.functions.controllers.MyPortfolioController;
 import com.marcin_k.mystocks.handlers.NewPortfolioStockHandler;
 import com.marcin_k.mystocks.model.Stock;
+
 
 public class MyPortfolio {
 	
@@ -49,6 +54,16 @@ public class MyPortfolio {
 	
 
 	private TableViewer viewer;
+	
+	//event listener
+	@Inject
+	@Optional
+	private void subscribeTopicTodoAllTopics
+	  (@UIEventTopic(MyEventConstants.TOPIC_STOCKS_MYPORTFOLIO) Map<String, String> event) {
+	  if (viewer != null) {
+		  viewer.setInput(MyPortfolioController.getInstance().getMyPortfolioStocks());
+	  }
+	} 
 	
 	@PostConstruct
 	public void createControls( Composite parent) {
@@ -95,7 +110,7 @@ public class MyPortfolio {
 
 		    // initially the table is also filled
 		    // the button is used to update the data if the model changes
-		    viewer.setInput(ArrayContentProvider.getInstance());
+//		    viewer.setInput(ArrayContentProvider.getInstance());
 		    viewer.setInput(MyPortfolioController.getInstance().getMyPortfolioStocks());
 		
 		    
