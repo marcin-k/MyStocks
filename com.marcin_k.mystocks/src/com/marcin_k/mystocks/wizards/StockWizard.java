@@ -16,8 +16,7 @@ public class StockWizard extends Wizard{
 	} 
 	
 	@Override public void addPages() { 
-		addPage( new StockWizardPage1( )); 
-		addPage( new StockWizardPage2()); 
+		addPage( new StockWizardPage1()); 
 	} 
 	
 	@Override

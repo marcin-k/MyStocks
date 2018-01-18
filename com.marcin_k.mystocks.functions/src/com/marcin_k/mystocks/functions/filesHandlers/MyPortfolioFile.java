@@ -79,10 +79,12 @@ public class MyPortfolioFile {
 
 //----------------------------------------------- Getters and Setters --------------------------------------------------	
 		public ArrayList<String> getList(){
+			System.out.println("list length "+myList.size());
 			return myList;
 		}
-		public void saveFile(ArrayList<String> stockList) {
-			createFile(stockList);
+		public void saveFile(String additonalTicker) {
+			myList.add(additonalTicker);
+			createFile(myList);
 		}
 		
 }

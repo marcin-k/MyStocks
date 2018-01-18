@@ -62,6 +62,8 @@ public class MyPortfolio {
 	  (@UIEventTopic(MyEventConstants.TOPIC_STOCKS_MYPORTFOLIO) Map<String, String> event) {
 	  if (viewer != null) {
 		  viewer.setInput(MyPortfolioController.getInstance().getMyPortfolioStocks());
+		  System.out.println("refreshing list");
+		  
 	  }
 	} 
 	

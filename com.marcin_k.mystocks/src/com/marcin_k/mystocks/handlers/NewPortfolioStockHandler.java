@@ -9,6 +9,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 
 import com.marcin_k.mystocks.events.MyEventConstants;
+import com.marcin_k.mystocks.functions.controllers.MyPortfolioController;
 import com.marcin_k.mystocks.wizards.StockWizard;
 
 public class NewPortfolioStockHandler {
@@ -18,6 +19,7 @@ public class NewPortfolioStockHandler {
 		if (dialog.open() == WizardDialog.OK) { 
 			// call service to save Todo object
 			System.out.println("from handler");
+			MyPortfolioController.getInstance().updateFile(MyPortfolioController.getInstance().getTempTicker());
 			broker.post(MyEventConstants.TOPIC_STOCKS_MYPORTFOLIO,
                     createEventData(MyEventConstants.TOPIC_STOCKS_MYPORTFOLIO));
 		}
