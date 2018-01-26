@@ -1,6 +1,9 @@
 package com.marcin_k.mystocks.parts;
 
 import java.awt.Label;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -96,7 +99,7 @@ public class MyPortfolio {
 		      }
 		    });
 		    colSummary.getColumn().setWidth(100);
-		    colSummary.getColumn().setText("Summary");
+		    colSummary.getColumn().setText("Ticker");
 
 		    // create column for description property
 		    TableViewerColumn colDescription = new TableViewerColumn(viewer, SWT.NONE);
@@ -104,11 +107,17 @@ public class MyPortfolio {
 		      @Override
 		      public String getText(Object element) {
 		        Stock todo = (Stock) element;
-		        return todo.getTicker();
+//		        double last = todo.getLastClosePrice();
+//		        double secondLast = todo.getSecondLastClosePrice();
+//		        String toReturn = last < secondLast ? "- " : "";
+//		        toReturn += last - secondLast;
+		        
+		        DecimalFormat df = new DecimalFormat("#.00"); 
+		        return round((todo.getLastClosePrice() - todo.getSecondLastClosePrice()))+"";
 		      }
 		    });
 		    colDescription.getColumn().setWidth(200);
-		    colDescription.getColumn().setText("Description");
+		    colDescription.getColumn().setText("P");
 
 		    // initially the table is also filled
 		    // the button is used to update the data if the model changes
@@ -175,5 +184,17 @@ public class MyPortfolio {
 	    	  }
 	    }); 
 		
+	}
+	
+	public static double round(double value) {
+	    if (2 < 0) throw new IllegalArgumentException();
+
+	    BigDecimal bd = new BigDecimal(value);
+	    bd = bd.setScale(2, RoundingMode.HALF_UP);
+	    double value1 = bd.doubleValue();
+	    DecimalFormat df = new DecimalFormat("#.##");      
+	    value1 = Double.valueOf(df.format(value1));
+	    
+	    return value1;
 	}
 }

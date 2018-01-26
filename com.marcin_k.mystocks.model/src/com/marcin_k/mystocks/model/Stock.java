@@ -40,6 +40,16 @@ public class Stock {
 		return stockRecords;
 	}
 	
+	//returns close price from last session
+	public double getLastClosePrice() {
+		return stockRecords.get(stockRecords.size()-1).getClosePrice();
+	}
+	
+	//returns close price from the second last session
+	public double getSecondLastClosePrice() {
+		return stockRecords.get(stockRecords.size()-2).getClosePrice();
+	}
+	
 //------------------------------------------------ Data binding methods ------------------------------------------------ 
 	public void setTicker(String ticker) {
 		changes.firePropertyChange( TICKER, this.ticker, this.ticker = ticker);
