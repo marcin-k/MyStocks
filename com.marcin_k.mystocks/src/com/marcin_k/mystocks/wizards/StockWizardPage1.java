@@ -25,7 +25,7 @@ public class StockWizardPage1 extends WizardPage{
 	public StockWizardPage1() { 
 		super(" wizardPage"); 
 		setTitle(" Validate"); 
-		setDescription(" Check to create the todo item"); 
+		setDescription(" Check to add stock"); 
 		}
 	
 
@@ -64,28 +64,8 @@ public class StockWizardPage1 extends WizardPage{
 		checkStatus.setText("----------------------");
 		
 		
-		checkNameButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				if (checkIfNameIsCorrect(ticker.getText())) {
-					checkStatus.setText("name correct");
-					MyPortfolioController.getInstance().setTempTicker(ticker.getText());
-					//Wizard")getWizard()).getPages()
-					setPageComplete(true);
-				}
-				else {
-					checkStatus.setText("name incorrect");
-					setPageComplete(false);
-				}
-
-			}
-		});
-		
-		//--------------------------Below old-----------------------------------
-		
-		
-		
 		Label label3 = new Label( container, SWT.NONE); 
-		label3.setText(" Create the todo"); 
+		label3.setText(" Add stock to the list"); 
 		Button button = new Button( container, SWT.CHECK);
 		button.setText(" Check"); 
 		button.addSelectionListener( new SelectionAdapter() { 
@@ -99,6 +79,24 @@ public class StockWizardPage1 extends WizardPage{
 				} 
 			}); 
 		setControl( container); 
+		
+		button.setEnabled(false);
+		
+		checkNameButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				if (checkIfNameIsCorrect(ticker.getText())) {
+					checkStatus.setText("name correct");
+					MyPortfolioController.getInstance().setTempTicker(ticker.getText());
+					//Wizard")getWizard()).getPages()
+					button.setEnabled(true);
+				}
+				else {
+					checkStatus.setText("name incorrect");
+					button.setEnabled(false);
+				}
+
+			}
+		});
 	} 
 	
 	private boolean checkIfNameIsCorrect(String ticker) {

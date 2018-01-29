@@ -4,6 +4,7 @@ import java.awt.Label;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -24,10 +25,13 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -87,44 +91,93 @@ public class MyPortfolio {
 	    table.setLayoutData(tableGrid);
 	    viewer.setContentProvider(ArrayContentProvider.getInstance());
 		
-//--------------------------------------------TESTING-------------------------------------------------------------------		
-		
-		    // create column for the summary property
-		    TableViewerColumn colSummary = new TableViewerColumn(viewer, SWT.NONE);
-		    colSummary.setLabelProvider(new ColumnLabelProvider() {
+	    DecimalFormat df = new DecimalFormat("0.00"); 
+	    
+		    // create column for the ticker property
+		    TableViewerColumn colTicker = new TableViewerColumn(viewer, SWT.NONE);
+		    colTicker.setLabelProvider(new ColumnLabelProvider() {
 		      @Override
 		      public String getText(Object element) {
 		        Stock todo = (Stock) element;
 		        return todo.getTicker();
 		      }
 		    });
-		    colSummary.getColumn().setWidth(100);
-		    colSummary.getColumn().setText("Ticker");
+		    colTicker.getColumn().setWidth(100);
+		    colTicker.getColumn().setText("Ticker");
 
-		    // create column for description property
-		    TableViewerColumn colDescription = new TableViewerColumn(viewer, SWT.NONE);
-		    colDescription.setLabelProvider(new ColumnLabelProvider() {
+		    // create column for price change property
+		    TableViewerColumn colPrice = new TableViewerColumn(viewer, SWT.NONE);
+		    colPrice.setLabelProvider(new ColumnLabelProvider() {
 		      @Override
 		      public String getText(Object element) {
 		        Stock todo = (Stock) element;
-//		        double last = todo.getLastClosePrice();
-//		        double secondLast = todo.getSecondLastClosePrice();
-//		        String toReturn = last < secondLast ? "- " : "";
-//		        toReturn += last - secondLast;
-		        
-		        DecimalFormat df = new DecimalFormat("#.00"); 
-		        return round((todo.getLastClosePrice() - todo.getSecondLastClosePrice()))+"";
-		      }
+		        return (df.format(round(todo.getLastClosePrice())))+"";
+		       }
 		    });
-		    colDescription.getColumn().setWidth(200);
-		    colDescription.getColumn().setText("P");
-
+		    colPrice.getColumn().setWidth(100);
+		    colPrice.getColumn().setText("Price");
+		    		    
+		    // create column for price change property
+		    TableViewerColumn colChange = new TableViewerColumn(viewer, SWT.NONE);
+		    colChange.setLabelProvider(new ColumnLabelProvider() {
+		      @Override
+		      public String getText(Object element) {
+		        Stock todo = (Stock) element;
+		        return df.format(round((todo.getLastClosePrice() - todo.getSecondLastClosePrice())))+"";
+		       }
+		    });
+		    colChange.getColumn().setWidth(100);
+		    colChange.getColumn().setText("Change");
+		
+		    // create column for price change percentage property
+		    TableViewerColumn colChangeP = new TableViewerColumn(viewer, SWT.NONE);
+		    colChangeP.setLabelProvider(new ColumnLabelProvider() {
+		      @Override
+		      public String getText(Object element) {
+		        Stock todo = (Stock) element;
+		        double percentageChange = (todo.getLastClosePrice() - todo.getSecondLastClosePrice())/todo.getSecondLastClosePrice()*100;
+		        
+		        return df.format(round(percentageChange))+"%";
+		       }
+		    });
+		    colChangeP.getColumn().setWidth(100);
+		    colChangeP.getColumn().setText("Change %");
+		    
+		    // create column for volume property
+		    TableViewerColumn colVolume = new TableViewerColumn(viewer, SWT.NONE);
+		    colVolume.setLabelProvider(new ColumnLabelProvider() {
+		      @Override
+		      public String getText(Object element) {
+		        Stock todo = (Stock) element;
+		        
+		        DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+		        formatSymbols.setGroupingSeparator(' ');
+		        DecimalFormat formatter = new DecimalFormat("###,###,###,###.#", formatSymbols);
+		        
+		        return formatter.format(todo.getLastVolume())+"";
+		       }
+		    });
+		    colVolume.getColumn().setWidth(100);
+		    
+		    
+		    
+		    //Align all columns exepct ticker to right
+		    colVolume.getColumn().setText("Volume");
+		    colVolume.getColumn().setAlignment(SWT.RIGHT);
+		    colChangeP.getColumn().setAlignment(SWT.RIGHT);
+		    colChange.getColumn().setAlignment(SWT.RIGHT);
+		    colPrice.getColumn().setAlignment(SWT.RIGHT);
+		    
+		    //Set header style
+		    //parent.getDisplay().getSystemColor(SWT.COLOR_RED)
+		    viewer.getTable().setHeaderForeground(new Color(parent.getDisplay(), new RGB(28, 158, 39)));
+		    
+		    
+		    
 		    // initially the table is also filled
 		    // the button is used to update the data if the model changes
-//		    viewer.setInput(ArrayContentProvider.getInstance());
 		    viewer.setInput(MyPortfolioController.getInstance().getMyPortfolioStocks());
-		
-		    
+				    
 		    // calling the command to add new stock
 			Button addStockButton = new Button(parent, SWT.NONE);
 			addStockButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
@@ -154,8 +207,6 @@ public class MyPortfolio {
 				}
 			});
 		    
-		    	
-//---------------------------------------------TESTING------------------------------------------------------------------		
 		
 		//--------------------------STOCK SIGNALS--------------------------
 		Group signalGroup = new Group(parent, SWT.NONE);
@@ -183,6 +234,10 @@ public class MyPortfolio {
 	    	    macdIndicator.setText(firstElement.getTicker());
 	    	  }
 	    }); 
+//	   Not working 
+//	    Point point = new Point(1, 1);
+//	    ViewerCell vc = viewer.getCell(point);
+//	    vc.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_RED));
 		
 	}
 	

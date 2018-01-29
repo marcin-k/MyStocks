@@ -50,6 +50,10 @@ public class Stock {
 		return stockRecords.get(stockRecords.size()-2).getClosePrice();
 	}
 	
+	public double getLastVolume() {
+		return stockRecords.get(stockRecords.size()-1).getVolume();
+	}
+	
 //------------------------------------------------ Data binding methods ------------------------------------------------ 
 	public void setTicker(String ticker) {
 		changes.firePropertyChange( TICKER, this.ticker, this.ticker = ticker);
