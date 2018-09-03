@@ -42,6 +42,8 @@ public class StocksController {
 	private ArrayList<Stock> allStocks;
 	//stores a String array of tickers
 	private ArrayList<String> tickersArray;
+	//stores wig20 stocks
+	private ArrayList<Stock> wig20Stocks;
 	
 	//divider for volume
 	private int volumeDivider;
@@ -53,14 +55,16 @@ public class StocksController {
 	private StocksController() {
 	
 		allStocks = new ArrayList<Stock>();
-		
+		wig20Stocks = new ArrayList<Stock>();
 		tickersArray = new ArrayList<>();
-		int count =0;
-		for(Stock stock : allStocks) {
-			System.out.println("setting up array of strings "+stock.getTicker());
-			tickersArray.set(count, stock.getTicker());
-			count++;
-		}
+		
+		
+//		int count =0;
+//		for(Stock stock : allStocks) {
+//			System.out.println("setting up array of strings "+stock.getTicker());
+//			tickersArray.set(count, stock.getTicker());
+//			count++;
+//		}
 	}
 	
 //----------------------------------- Setup method creates all allStocks Object ----------------------------------------	
@@ -72,12 +76,26 @@ public class StocksController {
 			ReadStockFile reader = new ReadStockFile();
 			allStocks.add(reader.getStockHistoryFromFile(ticker));
 		}
+		//TODO: check execution of this method
+		long startTime = System.nanoTime();
+		for(Stock s : allStocks) {
+			if(FilesController.getInstance().getWig20list().contains(s.getTicker())) {
+				wig20Stocks.add(s);
+			}
+		}
+		long endTime = System.nanoTime();
+		long executiontime = endTime - startTime;
+		System.out.println("execution time was: "+executiontime);
 	}
 	
 //---------------------------------------------- Getters and Setters ---------------------------------------------------	
 	//get all stocks object
 	public ArrayList<Stock> getAllStocksObjects(){
 		return allStocks;
+	}
+	
+	public ArrayList<Stock> getWig20StocksObjects(){
+		return wig20Stocks;
 	}
 	
 	public ArrayList<String> getAllTickers(){
