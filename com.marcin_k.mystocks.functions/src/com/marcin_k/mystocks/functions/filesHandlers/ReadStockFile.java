@@ -53,7 +53,7 @@ public class ReadStockFile {
 			}
 			
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("***** IOException in stock file *****");
 		}
 		
 		//Stock object containing stock history

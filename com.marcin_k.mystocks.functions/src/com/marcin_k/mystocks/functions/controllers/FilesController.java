@@ -16,7 +16,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import com.marcin_k.mystocks.functions.filesHandlers.ConfigFile;
+import com.marcin_k.mystocks.functions.filesHandlers.ReadWig20File;
 import com.marcin_k.mystocks.functions.filesHandlers.UnzipUtility;
+import com.marcin_k.wig20downloader.DownloadWig20;
 
 /********************************************************************
  * Controller used to deal with the stock files, responsible for
@@ -45,19 +47,23 @@ public class FilesController {
 	/** Variables **/
 	ConfigFile configFile;
 	UnzipUtility unzipUtility;
+	ReadWig20File readWig20File;
 	String sourceDirectory;
 	String destDirectory;
 	String urlOfZipFile;
 	String lastUpdateDate;
+	ArrayList<String> wig20list;
 	
 //-------------------------------------------------- Constructor -------------------------------------------------------
 	private FilesController() {
 		configFile = new ConfigFile();
 		unzipUtility = new UnzipUtility();
+		readWig20File = new ReadWig20File();
 		sourceDirectory = configFile.getZipFileName();
 		destDirectory =configFile.getFilesExportedDirectoryName();
 		urlOfZipFile = configFile.getURLOfZippedStockFiles();
 		lastUpdateDate = configFile.getLastModificationDate();
+		wig20list = readWig20File.getWig20Companies();
 	}
 	
 
@@ -88,7 +94,8 @@ public class FilesController {
 		String dateNow = dtf.format(now);
 		
 		if (!(dateNow.substring(0, 10).equals(lastUpdateDate.substring(0, 10)))) {
-			downloadFile();
+			downloadStockFile();
+			downloadListOfWig20();
 			unzipUtility.unzip(sourceDirectory, destDirectory);
 			deleteUnusedFiles(configFile.getPrefixesToDelete());
 		}
@@ -105,8 +112,20 @@ public class FilesController {
 		return destDirectory;
 	}
 	
-//--------------------------------- Downloads the file in the ZIP format from the URL ----------------------------------
-	public void downloadFile() {
+	public ArrayList<String> getWig20list(){
+		return wig20list;
+	}
+//---------------------------------------- Creates file with list of wig20 companies -----------------------------------
+	private void downloadListOfWig20() {
+		try {
+			DownloadWig20.main(new String[]{});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+//--------------------------------- Downloads stock file in the ZIP format from the URL ---------------------------------
+	public void downloadStockFile() {
 		try {
 			URL website = new URL(urlOfZipFile);
 			ReadableByteChannel rbc;

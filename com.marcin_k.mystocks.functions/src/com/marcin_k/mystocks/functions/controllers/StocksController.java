@@ -1,5 +1,6 @@
 package com.marcin_k.mystocks.functions.controllers;
 
+
 import java.util.ArrayList;
 
 import com.marcin_k.mystocks.functions.filesHandlers.ReadStockFile;
@@ -8,6 +9,9 @@ import com.marcin_k.mystocks.model.Stock;
 import com.marcin_k.mystocks.model.StockComponent;
 import com.marcin_k.mystocks.model.exceptions.NotEnoughRecordsException;
 import com.marcin_k.mystocks.model.technical_indicators.MACD;
+
+
+
 
 /***********************************************************
  * Controller utilise the Singleton design pattern
@@ -47,6 +51,7 @@ public class StocksController {
 	
 //------------------------------------------------ Constructor ---------------------------------------------------------
 	private StocksController() {
+	
 		allStocks = new ArrayList<Stock>();
 		
 		tickersArray = new ArrayList<>();

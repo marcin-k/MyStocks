@@ -54,7 +54,7 @@ public class MyPortfolioController {
 		//to make sure when the new stocks are added there is no duplication 
 		myPortfolioStocks.clear();	
 		for(String ticker : stringList) {
-			Stock stock = StocksController.getInstance().getStockWithTicker(ticker);
+//			Stock stock = StocksController.getInstance().getStockWithTicker(ticker);
 			myPortfolioStocks.add(StocksController.getInstance().getStockWithTicker(ticker));
 		}
 	}
@@ -65,7 +65,7 @@ public class MyPortfolioController {
 	
 //--------------------------------------------- Updates Array List -----------------------------------------------------
 	public void updateList(String ticker) {
-		Stock stock = StocksController.getInstance().getStockWithTicker(ticker);
+//		Stock stock = StocksController.getInstance().getStockWithTicker(ticker);
 		myPortfolioStocks.add(StocksController.getInstance().getStockWithTicker(ticker));
 	}
 	

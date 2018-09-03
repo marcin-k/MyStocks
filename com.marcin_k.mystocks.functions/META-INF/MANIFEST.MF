@@ -9,7 +9,8 @@ Export-Package: com.marcin_k.mystocks.functions.controllers,
  com.marcin_k.mystocks.functions.filesHandlers
 Import-Package: com.marcin_k.mystocks.model,
  com.marcin_k.mystocks.model.exceptions,
- com.marcin_k.mystocks.model.technical_indicators
+ com.marcin_k.mystocks.model.technical_indicators,
+ com.marcin_k.wig20downloader
 Require-Bundle: org.apiguardian;bundle-version="1.0.0";resolution:=optional,
  org.opentest4j;bundle-version="1.0.0";resolution:=optional,
  org.hamcrest.core;resolution:=optional,

@@ -74,7 +74,7 @@ public class ConfigFile {
 		} catch (IOException e) {
 			//if the IO Exception occurs the default file is created
 			createFile();
-			e.printStackTrace();
+			System.out.println("***** Config file missing *****");
 		}
 	}
 	

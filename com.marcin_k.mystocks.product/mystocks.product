@@ -3,6 +3,7 @@
 
 <product name="mystocks" uid="mystocks" id="com.marcin_k.mystocks.product" application="org.eclipse.e4.ui.workbench.swt.E4Application" useFeatures="true" includeLaunchers="true">
 
+
    <configIni use="default">
    </configIni>
 
@@ -13,6 +14,8 @@
       </vmArgsMac>
    </launcherArgs>
 
+   <windowImages/>
+
    <splash
       location="com.marcin_k.mystocks"
       startupProgressRect="5,275,445,15" />
@@ -22,8 +25,10 @@
       </win>
    </launcher>
 
+
    <vm>
    </vm>
+
 
    <plugins>
    </plugins>
@@ -35,5 +40,12 @@
       <feature id="org.eclipse.e4.rcp"/>
    </features>
 
+
+   <preferencesInfo>
+      <targetfile overwrite="false"/>
+   </preferencesInfo>
+
+   <cssInfo>
+   </cssInfo>
 
 </product>
