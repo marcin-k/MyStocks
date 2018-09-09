@@ -2,7 +2,6 @@ package com.marcin_k.mystocks.parts;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.e4.ui.services.EMenuService;
@@ -13,18 +12,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.Text;
 
 import com.marcin_k.mystocks.functions.controllers.StocksController;
 import com.marcin_k.mystocks.model.Stock;
@@ -39,7 +31,7 @@ import com.marcin_k.mystocks.model.Stock;
 public class Wig20Side {
 
 	/** Variables **/
-	private WritableList writableList;
+	private WritableList<Stock> writableList;
 	private TableViewer viewer;
 
 	//access to selection service

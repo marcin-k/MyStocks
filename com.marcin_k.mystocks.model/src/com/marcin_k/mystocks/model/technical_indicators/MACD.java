@@ -5,7 +5,7 @@ import com.marcin_k.mystocks.model.exceptions.NotEnoughRecordsException;
 /***********************************************************************
  * MACD, short for moving average convergence/divergence, is a trading 
  * indicator used in technical analysis of stock prices, created by 
- * Gerald Appel in the late 1970s.[1] It is supposed to reveal changes 
+ * Gerald Appel in the late 1970s. It is supposed to reveal changes 
  * in the strength, direction, momentum, and duration of a trend in 
  * a stock's price.
  * 
@@ -19,7 +19,7 @@ import com.marcin_k.mystocks.model.exceptions.NotEnoughRecordsException;
  * The average series is an EMA of the MACD series itself.
  * 
  ************************************************************************/
-public class MACD {
+public class MACD extends Indicator{
 	//The MACD indicator thus depends on three time parameters, namely 
 	//the time constants of the three EMAs. The notation "MACD(a,b,c)"
 	private int EMAa;
@@ -75,12 +75,6 @@ public class MACD {
 		fillArraysWithNumbers();
 	}
 	
-	//fill the arrays with 0s for the record that can not be calucalted
-	private void fillZeros(int duration, double[] array) {
-		for (int i=0; i<duration; i++) {
-			array[i]=0;
-		}
-	}
 	
 	//TODO : calculate all of the arrays 
 	//TODO : get return method to get a range required
@@ -108,7 +102,7 @@ public class MACD {
 			MACD[i]=EMAaArray[i]-EMAbArray[i];
 //			System.out.println("MACD "+MACD[i]);
 		}
-//TODO: fix signal calulcation		
+//TODO: fix signal calculation		
 		//Signal
 		
 		Signal[EMAb-1+EMAc-1] = calculateAverage(getSubArray(MACD, EMAb-1, EMAb-1+EMAc));
@@ -130,39 +124,7 @@ public class MACD {
 //		}
 	}
 	
-	//returns the double array, sub array of close prices with first and last position of the array
-	private double[] getSubArray(double[] referencedArray, int firstIndex, int lastIndex) {
-		double[] array = new double[lastIndex-firstIndex];
-		int positionInNewArray = 0;
-		for(int i=firstIndex; i<lastIndex; i++) {
-			array[positionInNewArray]=referencedArray[i];
-//			System.out.println("getSubArray "	+array[positionInNewArray]);
-			positionInNewArray++;
-		}
-		return array;	
-	}
-	//*
-	//returns an average from a array of numbers 
-	private double calculateAverage(double[] numbers) {
-		double sum = 0;
-		for(double number: numbers) {
-//			System.out.println("number: "+number);
-			sum += number;
-//			System.out.println("calc average "	+number);
-		}
-		System.out.println("calc average numbers "	+numbers.length);
-		return sum/numbers.length;
-	}
-	
-	//increments the every element in the array by the value passed in
-	private double [] incrementElements(double[] array, double increment) {
-		double [] arrayToBeReturned = new double[array.length];
-		for (int i=0; i<array.length; i++) {
-			arrayToBeReturned[i]=array[i]+increment;
-		}
-		return arrayToBeReturned;
-	}
-	
+
 	//returns last number of records requested for MACD
 	//controller checks if sufficient number is available based on number of 
 	//close price records
